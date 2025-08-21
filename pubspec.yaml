@@ -11,6 +11,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.0.10
+  image_picker: ^1.0.7
+  intl: ^0.18.1 
+  dotted_border: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -21,9 +24,7 @@ flutter:
   uses-material-design: true
   assets:
     - Assets/logo.jpg
-    - Assets/app_goals_image.jpg
-    - Assets/special feature.png
-    - Assets/Smart ai image.png
+    - Assets/
   fonts:
     - family: RedditSans
       fonts:

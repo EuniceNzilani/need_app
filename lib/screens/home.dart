@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'what do you need/need_screen.dart'; // Use the correct class name NeedScreen
-import 'import from china/import1.dart'; // Use the correct class name Import1
+import 'what do you need/need.dart';
+import 'import from china/import.dart' hide CustomBottomNav;
 import 'expert profiles/services_available.dart';
-import 'import from china/track_request.dart';
+import 'import from china/track_request.dart' hide CustomBottomNav;
+import '../widgets/custom_top_nav.dart';
+import '../widgets/custom_bottom_nav.dart';
 
 // SVGs as constants for quick access buttons
 const String expertAvailableSvg = '''
@@ -14,70 +16,24 @@ const String trackImportSvg = '''
 <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><title/><g><path d="M90,42H83.3936A35.9331,35.9331,0,0,0,54,12.6064V6A6,6,0,0,0,42,6v6.6064A35.9331,35.9331,0,0,0,12.6064,42H6A6,6,0,0,0,6,54h6.6064A35.9331,35.9331,0,0,0,42,83.3936V90a6,6,0,0,0,12,0V83.3936A35.9331,35.9331,0,0,0,83.3936,54H90a6,6,0,0,0,0-12ZM48,72A24,24,0,1,1,72,48,24.0238,24.0238,0,0,1,48,72Z"/><path d="M48,36A12,12,0,1,0,60,48,12.0157,12.0157,0,0,0,48,36Z"/></g></svg>
 ''';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const Icon(Icons.location_on, color: Colors.black, size: 20),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Ojo Lagos Post...',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Implement Edit Location navigation here if needed
-              },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(0, 0),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                alignment: Alignment.centerLeft,
-                textStyle: const TextStyle(decoration: TextDecoration.none),
-              ),
-              child: const Text(
-                'Edit Location',
-                style: TextStyle(
-                  color: Color(0xFF23B09B),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Reddit Sans',
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 6, top: 8),
-            child: const Icon(
-              Icons.group_outlined,
-              color: Colors.black,
-              size: 22,
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(right: 14, top: 8),
-            child: const Icon(
-              Icons.settings_outlined,
-              color: Colors.black,
-              size: 22,
-            ),
-          ),
-        ],
+      appBar: const CustomTopNav(
+        showEditLocation: true,
+        showNotifications: true,
+        showSettings: true,
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
@@ -159,17 +115,18 @@ class Home extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 15),
+                    // Request Service Image
                     Container(
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(51), // 0.2 * 255 = 51
+                        color: Colors.white.withAlpha(51),
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(40),
                         child: Image.asset(
-                          'Assets/home image1.png',
+                          'Assets/import image.jpeg',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return const Icon(
@@ -199,7 +156,7 @@ class Home extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Import1()),
+                    MaterialPageRoute(builder: (context) => const Import()),
                   );
                 },
                 child: Container(
@@ -210,7 +167,7 @@ class Home extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withAlpha(25), // 0.1 * 255 = 25
+                        color: Colors.grey.withAlpha(25),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -240,7 +197,7 @@ class Home extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(18),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withAlpha(51), // 0.2*255
+                                    color: Colors.grey.withAlpha(51),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
@@ -251,7 +208,7 @@ class Home extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const Import1(),
+                                      builder: (context) => const Import(),
                                     ),
                                   );
                                 },
@@ -279,6 +236,7 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 15),
+                      // Order Goods from China Image
                       Container(
                         width: 100,
                         height: 92,
@@ -288,7 +246,7 @@ class Home extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.asset(
-                            'Assets/import image.jpeg',
+                            'Assets/home image1.png',
                             fit: BoxFit.contain,
                             alignment: Alignment.center,
                             errorBuilder: (context, error, stackTrace) {
@@ -344,7 +302,7 @@ class Home extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withAlpha(23), // 0.09*255=23
+                              color: Colors.grey.withAlpha(23),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -403,7 +361,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const TrackRequestScreen(),
+                          builder: (context) => const TrackRequest(),
                         ),
                       );
                     },
@@ -457,38 +415,14 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const _CustomBottomNav(currentIndex: 0),
-    );
-  }
-}
-
-// Simple custom bottom nav for your screen
-class _CustomBottomNav extends StatelessWidget {
-  final int currentIndex;
-  const _CustomBottomNav({required this.currentIndex});
-
-  @override
-  Widget build(BuildContext context) {
-    const Color greenColor = Color(0xFF23B09B);
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: greenColor,
-      unselectedItemColor: Colors.black,
-      currentIndex: currentIndex,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.wifi_tethering),
-          label: 'AI Support',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle_outlined),
-          label: 'Account',
-        ),
-      ],
-      onTap: (index) {
-        // Only implement navigation if you have the screens.
-      },
+      bottomNavigationBar: CustomBottomNav(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
     );
   }
 }

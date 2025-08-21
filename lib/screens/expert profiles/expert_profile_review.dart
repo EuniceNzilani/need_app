@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../home.dart';
+import '../home.dart';
 import '../negotiation/negotiation_chat.dart';
 import '../negotiation/service_summary.dart';
 import 'expert_profile_about.dart';
-import 'expert_profile_review.dart';
+import 'expert_profile_jobs.dart' as jobs;
 
 // --- Bottom Nav Widget ---
 class CustomBottomNav extends StatelessWidget {
@@ -64,15 +64,15 @@ class CustomBottomNav extends StatelessWidget {
   }
 }
 
-class ExpertProfileJobs extends StatefulWidget {
-  const ExpertProfileJobs({super.key});
+class ExpertProfileReview extends StatefulWidget {
+  const ExpertProfileReview({super.key});
 
   @override
-  State<ExpertProfileJobs> createState() => _ExpertProfileJobsState();
+  State<ExpertProfileReview> createState() => _ExpertProfileReviewState();
 }
 
-class _ExpertProfileJobsState extends State<ExpertProfileJobs> {
-  int _currentTab = 1; // 0 = About, 1 = Photos, 2 = Review
+class _ExpertProfileReviewState extends State<ExpertProfileReview> {
+  int _currentTab = 2; // 0 = About, 1 = Photos, 2 = Review
 
   void _onTab(int index) {
     if (_currentTab == index) return;
@@ -84,13 +84,13 @@ class _ExpertProfileJobsState extends State<ExpertProfileJobs> {
         );
         break;
       case 1:
-        // Already here, do nothing
-        break;
-      case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const ExpertProfileReview()),
+          MaterialPageRoute(builder: (_) => const jobs.ExpertProfileJobs()),
         );
+        break;
+      case 2:
+        // Already here, do nothing
         break;
     }
   }
@@ -109,8 +109,6 @@ class _ExpertProfileJobsState extends State<ExpertProfileJobs> {
   Widget build(BuildContext context) {
     const String mapImage = "Assets/map image.png";
     const Color greenColor = Color(0xFF23B09B);
-
-    List<String> jobImages = List.generate(8, (i) => "Assets/map image.png");
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -297,7 +295,7 @@ class _ExpertProfileJobsState extends State<ExpertProfileJobs> {
                 const Padding(
                   padding: EdgeInsets.only(left: 3.0, bottom: 10),
                   child: Text(
-                    "Previous Jobs",
+                    "Reviews",
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
@@ -305,21 +303,26 @@ class _ExpertProfileJobsState extends State<ExpertProfileJobs> {
                     ),
                   ),
                 ),
-                GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: jobImages.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.1,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemBuilder:
-                      (context, idx) => ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(jobImages[idx], fit: BoxFit.cover),
-                      ),
+                _ReviewCard(
+                  name: "Sarah Johnson",
+                  rating: 5,
+                  date: "2 days ago",
+                  review:
+                      "Friday did an excellent job fixing my generator. Very professional and efficient.",
+                ),
+                _ReviewCard(
+                  name: "Michael Adebayo",
+                  rating: 5,
+                  date: "1 week ago",
+                  review:
+                      "Great service! My car is running perfectly after the repair work.",
+                ),
+                _ReviewCard(
+                  name: "Grace Okafor",
+                  rating: 4,
+                  date: "2 weeks ago",
+                  review:
+                      "Good work on the vulcanizer service. Reliable and reasonably priced.",
                 ),
                 const SizedBox(height: 18),
                 Row(
@@ -394,10 +397,106 @@ class _ExpertProfileJobsState extends State<ExpertProfileJobs> {
   }
 }
 
+class _ReviewCard extends StatelessWidget {
+  final String name;
+  final int rating;
+  final String date;
+  final String review;
+
+  const _ReviewCard({
+    required this.name,
+    required this.rating,
+    required this.date,
+    required this.review,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.grey[200],
+                  child: Text(
+                    name[0],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          fontFamily: 'Reddit Sans',
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          ...List.generate(
+                            5,
+                            (i) => Icon(
+                              Icons.star,
+                              size: 14,
+                              color:
+                                  i < rating
+                                      ? const Color(0xFFFFB800)
+                                      : Colors.grey[300],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            date,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                              fontFamily: 'Reddit Sans',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              review,
+              style: const TextStyle(
+                fontSize: 14,
+                fontFamily: 'Reddit Sans',
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
   const _StatCard({required this.label, required this.value});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -434,6 +533,7 @@ class _TabButton extends StatelessWidget {
     required this.selected,
     required this.onTap,
   });
+
   @override
   Widget build(BuildContext context) {
     return Expanded(

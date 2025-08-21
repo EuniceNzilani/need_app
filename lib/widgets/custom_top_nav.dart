@@ -17,38 +17,63 @@ class CustomTopNav extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 1,
-      backgroundColor: Colors.white,
+      elevation: 0,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Edit Location
+          // Location section with pin icon
           if (showEditLocation)
-            TextButton(
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                minimumSize: const Size(0, 40),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/edit_profile');
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/edit_location');
               },
-              child: const Text(
-                "Edit Location",
-                style: TextStyle(
-                  fontFamily: 'RedditSans',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Color(0xFF14A388),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.location_on, color: Colors.black, size: 20),
+                        const SizedBox(width: 4),
+                        const Text(
+                          "Ojo Lagos Post...",
+                          style: TextStyle(
+                            fontFamily: 'RedditSans',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: Text(
+                        "Edit Location",
+                        style: TextStyle(
+                          fontFamily: 'RedditSans',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: Color(0xFF14A388),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             )
           else
-            const SizedBox(width: 115), // Keeps icons right-aligned if edit hidden
+            const SizedBox(width: 140),
 
-          // Optional Title
+          // Optional Title (centered)
           if (title.isNotEmpty)
             Expanded(
               child: Center(
@@ -65,24 +90,65 @@ class CustomTopNav extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
 
-          // Icons
+          // Right side icons
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (showNotifications)
-                IconButton(
-                  icon: const Icon(Icons.notifications_none, color: Colors.black, size: 28),
-                  tooltip: 'Notifications',
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/notifications');
-                  },
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF14A388).withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.notifications_none_outlined,
+                          color: Colors.black87,
+                          size: 24,
+                        ),
+                        tooltip: 'Notifications',
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/notifications');
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               if (showSettings)
-                IconButton(
-                  icon: const Icon(Icons.settings_outlined, color: Colors.black, size: 28),
-                  tooltip: 'Settings',
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/my_profile');
-                  },
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF14A388).withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.settings_outlined,
+                          color: Colors.black87,
+                          size: 24,
+                        ),
+                        tooltip: 'Settings',
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/settings');
+                        },
+                      ),
+                    ],
+                  ),
                 ),
             ],
           ),

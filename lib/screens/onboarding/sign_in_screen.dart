@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'auth/reset_password.dart';
+import 'sign_up_screen.dart';
+import 'location_permission.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -18,8 +21,20 @@ class _SignInScreenState extends State<SignInScreen> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Text(
+            "<",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 28,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SignUpScreen()),
+            );
+          },
         ),
         backgroundColor: Colors.white,
       ),
@@ -83,7 +98,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LocationPermissionScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       "Sign In",
                       style: TextStyle(
@@ -110,7 +132,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Implement reset password navigation
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ResetPasswordScreen(),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Reset",
@@ -119,7 +146,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           color: Color(0xFF00659D),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ),
@@ -148,7 +174,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           color: Color(0xFF00659D),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ),
@@ -179,27 +204,35 @@ class _RoundedTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      style: const TextStyle(fontFamily: 'RedditSans', fontSize: 16),
-      decoration: InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: const Color(0xFFF7F7F7),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 18,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFFF7F7F7),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        style: const TextStyle(fontFamily: 'RedditSans', fontSize: 16),
+        decoration: InputDecoration(
+          hintText: hint,
+          filled: true,
+          fillColor: Colors.transparent,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 18,
+          ),
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          suffixIcon: suffixIcon,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xFFEEEEEE), width: 2.0),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xFF14A388), width: 2.0),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        suffixIcon: suffixIcon,
       ),
     );
   }

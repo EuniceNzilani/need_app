@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_bottom_nav.dart';
 
 class TalkToAgentScreen extends StatefulWidget {
-  const TalkToAgentScreen({Key? key}) : super(key: key);
+  const TalkToAgentScreen({super.key});
 
   @override
   State<TalkToAgentScreen> createState() => _TalkToAgentScreenState();
@@ -153,7 +153,7 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.09),
+                      color: Colors.black.withAlpha(23), // 0.09 * 255 ≈ 23
                       blurRadius: 11,
                       offset: const Offset(0, 3),
                     ),
@@ -193,7 +193,7 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
                     ),
                     // WhatsApp
                     _contactItem(
-                      icon: Icons.whatsapp,
+                      icon: Icons.chat_bubble, // FIX: was Icons.whatsapp
                       text: "+234 904 251 2356",
                       buttonLabel: "WhatsApp",
                       onPressed: () {

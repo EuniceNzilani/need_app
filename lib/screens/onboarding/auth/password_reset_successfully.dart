@@ -7,6 +7,8 @@ class PasswordResetSuccessfullyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const Color greenColor = Color(0xFF23B09B);
+    const Color iconColor = Color(0xFF14A388);
+    const Color iconBackgroundColor = Color(0xFFE6F7F4);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -14,7 +16,14 @@ class PasswordResetSuccessfullyScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Text(
+            "<",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -33,12 +42,12 @@ class PasswordResetSuccessfullyScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3FAF8),
+                  color: iconBackgroundColor,
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.verified_rounded,
-                  color: greenColor,
+                  color: iconColor,
                   size: 50,
                 ),
               ),
@@ -58,7 +67,7 @@ class PasswordResetSuccessfullyScreen extends StatelessWidget {
                 "Your Password has been changed successfully",
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.black54,
+                  color: Colors.black,
                   fontFamily: 'Reddit Sans',
                 ),
                 textAlign: TextAlign.center,

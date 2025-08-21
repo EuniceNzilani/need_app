@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../home.dart';
+import '../home.dart';
 import '../negotiation/negotiation_chat.dart';
 import '../negotiation/service_summary.dart';
 import 'expert_profile_about.dart';

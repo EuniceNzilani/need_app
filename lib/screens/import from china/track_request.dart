@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../home.dart';
 import '../account/my_profile.dart';
 import '../account/notifications.dart';
+import 'import.dart';
 
 class TrackRequest extends StatelessWidget {
   const TrackRequest({super.key});
@@ -69,12 +70,35 @@ class TrackRequest extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- LIFTED TOP BAR TO SCREEN EDGE ---
+                // --- TOP BAR AT SCREEN EDGE ---
                 Padding(
                   padding: EdgeInsets.only(top: 12 * scale, bottom: 21 * scale),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Back arrow (black less-than sign)
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => const Import()),
+                          );
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: 10 * scale,
+                            top: 2 * scale,
+                          ),
+                          child: const Text(
+                            '<',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +183,8 @@ class TrackRequest extends StatelessWidget {
                               ),
                               padding: EdgeInsets.all(8 * scale),
                               child: Icon(
-                                Icons.arrow_forward_ios,
+                                Icons
+                                    .settings, // changed from arrow to settings
                                 color: Colors.black,
                                 size: 19 * scale,
                               ),
@@ -450,6 +475,8 @@ class CustomBottomNav extends StatelessWidget {
         pushReplacementNoAnimation(const Home());
         break;
       case 1:
+        // You may navigate to your actual AI support page here
+        // For now, we'll use NotificationsScreen as placeholder
         pushReplacementNoAnimation(const NotificationsScreen());
         break;
       case 2:
@@ -457,19 +484,4 @@ class CustomBottomNav extends StatelessWidget {
         break;
     }
   }
-}
-
-// Dummy screens for navigation targets you must implement in your codebase
-class NotificationsScreen extends StatelessWidget {
-  const NotificationsScreen({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Notifications')));
-}
-
-class MyProfileScreen extends StatelessWidget {
-  const MyProfileScreen({super.key});
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('My Profile')));
 }

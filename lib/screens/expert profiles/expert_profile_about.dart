@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../home.dart';
+import '../home.dart';
 import '../negotiation/negotiation_chat.dart';
 import '../negotiation/service_summary.dart';
-import 'expert_profile_jobs.dart';
+import 'expert_profile_jobs.dart' as jobs;
 import 'expert_profile_review.dart';
 
 // --- Bottom Nav Widget ---
@@ -11,10 +11,10 @@ class CustomBottomNav extends StatelessWidget {
   final Function(int) onTap;
 
   const CustomBottomNav({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class CustomBottomNav extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withAlpha(15), // 0.06 * 255 = 15
             blurRadius: 10,
             offset: const Offset(0, -3),
           ),
@@ -72,7 +72,7 @@ class ExpertProfileAbout extends StatefulWidget {
 }
 
 class _ExpertProfileAboutState extends State<ExpertProfileAbout> {
-  int _currentTab = 0; // 0 = About, 1 = Photos, 2 = Review
+  final int _currentTab = 0;
 
   void _onTab(int index) {
     if (_currentTab == index) return;
@@ -83,7 +83,7 @@ class _ExpertProfileAboutState extends State<ExpertProfileAbout> {
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const ExpertProfileJobs()),
+          MaterialPageRoute(builder: (_) => const jobs.ExpertProfileJobs()),
         );
         break;
       case 2:
@@ -254,11 +254,11 @@ class _ExpertProfileAboutState extends State<ExpertProfileAbout> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Row(
-              children: const [
+              children: [
                 Expanded(child: _StatCard(label: "Total Jobs", value: "10")),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(child: _StatCard(label: "Ratings", value: "5/5")),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(child: _StatCard(label: "Distance", value: "<5km")),
               ],
             ),
