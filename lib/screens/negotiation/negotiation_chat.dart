@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../account/my_profile.dart';
+import '../expert profiles/expert_profile_about.dart';
+import 'negotiation_chat2.dart';
 
 class NegotiationChatScreen extends StatefulWidget {
   const NegotiationChatScreen({super.key});
@@ -27,7 +29,6 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
       source: ImageSource.camera,
     );
     if (pickedFile != null) {
-      // You can handle or show the picked image here (send or preview)
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Image selected: ${pickedFile.name}')),
       );
@@ -37,7 +38,6 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
   Future<void> _pickFile() async {
     final XFile? file = await _picker.pickImage(source: ImageSource.gallery);
     if (file != null) {
-      // You can handle or show the picked file here (send or preview)
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('File selected: ${file.name}')));
@@ -45,88 +45,87 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
   }
 
   void _sendMessage() {
-    // For now, just clear the input and stay on this screen
     _controller.clear();
-    // Navigate to self to simulate "stay here"
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const NegotiationChatScreen()),
-    );
+    // For demo: do nothing else
   }
 
   @override
   Widget build(BuildContext context) {
     const Color greenColor = Color(0xFF23B09B);
+    const String profileImage = "Assets/friday chukwu image.jpg";
+    const Color infoBg = Color(0xFFCFE7E5);
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        titleSpacing: 0,
-        title: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const MyProfileScreen()),
-            );
-          },
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 21,
-                backgroundImage: const NetworkImage(
-                  "https://randomuser.me/api/portraits/men/32.jpg",
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(63),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          titleSpacing: 0,
+          title: InkWell(
+            borderRadius: BorderRadius.circular(30),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ExpertProfileAbout()),
+              );
+            },
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 18,
+                  backgroundImage: AssetImage(profileImage),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Friday Chukwu   (3km away from you)',
-                    style: TextStyle(
-                      fontFamily: 'Reddit Sans',
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
+                const SizedBox(width: 9),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Friday Chukwu  (2km away from you)',
+                      style: TextStyle(
+                        fontFamily: 'Reddit Sans',
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.5,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Online',
-                    style: TextStyle(
-                      color: greenColor,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Reddit Sans',
+                    SizedBox(height: 1.5),
+                    Text(
+                      'Online',
+                      style: TextStyle(
+                        color: greenColor,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Reddit Sans',
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
       body: Stack(
         children: [
-          // Background pattern can be implemented as an asset or left blank for now
-          Positioned.fill(
-            child: Container(
-              color: const Color(0xFFF9F9F9),
-              // Optionally: add background image/pattern here
-            ),
-          ),
+          Positioned.fill(child: Container(color: Colors.white)),
           Column(
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               // Date and Info Message
               if (_messages.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(
+                    top: 5.0,
+                    left: 20,
+                    right: 20,
+                    bottom: 8,
+                  ),
                   child: Column(
                     children: [
                       Text(
@@ -137,21 +136,22 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
                           fontSize: 12,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 7),
                       Container(
+                        width: double.infinity,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 13,
-                          vertical: 8,
+                          vertical: 9,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.10),
+                          color: infoBg,
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Text(
                           _messages[0]["info"]!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            color: Colors.teal,
+                            color: Colors.black,
                             fontSize: 13,
                             fontFamily: 'Reddit Sans',
                           ),
@@ -160,21 +160,17 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
                     ],
                   ),
                 ),
-              // ...Here you can add chat bubbles as needed
               const Expanded(child: SizedBox()),
-              // Message Input Bar
+              // Message Input Bar (SafeArea included)
               SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 14,
-                    left: 14,
-                    right: 14,
-                    top: 2,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 13),
                   child: Row(
                     children: [
+                      // Text input
                       Expanded(
                         child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25),
                             color: Colors.white,
@@ -188,26 +184,19 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
                           ),
                           child: Row(
                             children: [
-                              const SizedBox(width: 14),
                               Expanded(
                                 child: TextField(
                                   controller: _controller,
                                   decoration: const InputDecoration(
                                     hintText: "Message",
                                     border: InputBorder.none,
+                                    hintStyle: TextStyle(fontSize: 15),
+                                    isDense: true,
                                   ),
                                   minLines: 1,
                                   maxLines: 4,
+                                  style: const TextStyle(fontSize: 15),
                                 ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.camera_alt_outlined,
-                                  color: Colors.grey,
-                                  size: 22,
-                                ),
-                                onPressed: _pickImage,
-                                tooltip: "Send Camera Image",
                               ),
                               IconButton(
                                 icon: const Icon(
@@ -215,8 +204,19 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
                                   color: Colors.grey,
                                   size: 22,
                                 ),
+                                padding: const EdgeInsets.only(right: 2),
                                 onPressed: _pickFile,
                                 tooltip: "Attach File",
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: Colors.grey,
+                                  size: 22,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: _pickImage,
+                                tooltip: "Send Camera Image",
                               ),
                             ],
                           ),
@@ -224,18 +224,28 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
                       ),
                       const SizedBox(width: 9),
                       GestureDetector(
-                        onTap: _sendMessage,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const NegotiationChat2Screen(),
+                            ),
+                          );
+                        },
                         child: Container(
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
                             color: greenColor,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                            size: 22,
+                          child: const Center(
+                            child: Icon(
+                              Icons
+                                  .send, // Paper plane arrow to match previous file
+                              color: Colors.white,
+                              size: 26,
+                            ),
                           ),
                         ),
                       ),

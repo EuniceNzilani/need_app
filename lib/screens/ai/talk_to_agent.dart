@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../widgets/custom_bottom_nav.dart';
 
 class TalkToAgentScreen extends StatefulWidget {
@@ -18,29 +19,19 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
     } else if (idx == 2) {
       Navigator.pushReplacementNamed(context, '/my_profile');
     }
-    // idx==1 is AI Support
   }
 
   Widget _contactItem({
-    required IconData icon,
+    required Widget icon,
     required String text,
     required String buttonLabel,
     required VoidCallback onPressed,
-    Color? iconColor,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: const Color(0xFFE7F6F3),
-            child: Icon(
-              icon,
-              color: iconColor ?? const Color(0xFF14A388),
-              size: 28,
-            ),
-          ),
+          icon,
           const SizedBox(width: 16),
           Expanded(
             child: Text(
@@ -58,12 +49,13 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                elevation: 0,
-                side: const BorderSide(color: Color(0xFF14A388), width: 1),
+                elevation: 6,
+                shadowColor: Colors.black.withAlpha(38),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                side: BorderSide.none,
               ),
               onPressed: onPressed,
               child: Text(
@@ -72,13 +64,37 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
                   fontFamily: 'RedditSans',
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
-                  color: Color(0xFF14A388),
+                  color: Colors.black,
                 ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _whatsappCircleIcon() {
+    return CircleAvatar(
+      radius: 22,
+      backgroundColor: const Color(0xFF14A388),
+      child: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 28),
+    );
+  }
+
+  Widget _callCircleIcon() {
+    return CircleAvatar(
+      radius: 22,
+      backgroundColor: const Color(0xFF14A388),
+      child: Icon(Icons.call, color: Colors.white, size: 28),
+    );
+  }
+
+  Widget _emailCircleIcon() {
+    return CircleAvatar(
+      radius: 22,
+      backgroundColor: const Color(0xFF14A388),
+      child: Icon(Icons.email_outlined, color: Colors.white, size: 28),
     );
   }
 
@@ -91,7 +107,7 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -110,7 +126,6 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
           child: Column(
             children: [
               const SizedBox(height: 18),
-              // Agent Image
               SizedBox(
                 height: 110,
                 child: Image.asset(
@@ -153,14 +168,14 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(23), // 0.09 * 255 ≈ 23
+                      color: Colors.black.withAlpha(23),
                       blurRadius: 11,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
                       "Contact Information",
@@ -170,6 +185,7 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
                         fontSize: 16,
                         color: Colors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 3),
                     const Text(
@@ -180,36 +196,35 @@ class _TalkToAgentScreenState extends State<TalkToAgentScreen> {
                         fontSize: 13,
                         color: Colors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 18),
                     // Call Agent
                     _contactItem(
-                      icon: Icons.call,
+                      icon: _callCircleIcon(),
                       text: "+234 904 251 2356",
                       buttonLabel: "Call Agent",
                       onPressed: () {
-                        // You can use url_launcher to launch phone call
+                        // launch phone call
                       },
                     ),
                     // WhatsApp
                     _contactItem(
-                      icon: Icons.chat_bubble, // FIX: was Icons.whatsapp
+                      icon: _whatsappCircleIcon(),
                       text: "+234 904 251 2356",
                       buttonLabel: "WhatsApp",
                       onPressed: () {
-                        // You can use url_launcher to launch WhatsApp
+                        // launch WhatsApp
                       },
-                      iconColor: Colors.green[700],
                     ),
                     // Email
                     _contactItem(
-                      icon: Icons.email_outlined,
+                      icon: _emailCircleIcon(),
                       text: "needserviceapp@gmail.com",
                       buttonLabel: "Send Mail",
                       onPressed: () {
-                        // You can use url_launcher to launch mailto
+                        // launch mailto
                       },
-                      iconColor: Colors.blue[700],
                     ),
                   ],
                 ),

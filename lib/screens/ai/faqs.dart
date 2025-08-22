@@ -83,7 +83,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -124,21 +124,32 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      q,
-                      style: TextStyle(
-                        fontFamily: 'RedditSans',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color:
-                            idx % 2 == 0
-                                ? Colors.black
-                                : const Color(0xFF14A388),
-                        decoration:
-                            idx % 2 == 0
-                                ? TextDecoration.none
-                                : TextDecoration.underline,
-                      ),
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Text(
+                            q,
+                            style: const TextStyle(
+                              fontFamily: 'RedditSans',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.black,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ),
+                        // Small green underline beneath question (heading)
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: Container(
+                            width: 30,
+                            height: 2.2,
+                            color: const Color(0xFF14A388), // green underline
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
                     Text(

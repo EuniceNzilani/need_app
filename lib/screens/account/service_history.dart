@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_bottom_nav.dart';
+import '../../../widgets/custom_bottom_nav.dart' as custom_nav;
+import '../expert profiles/expert_profile_about.dart';
 
 class ServiceHistoryScreen extends StatefulWidget {
-  const ServiceHistoryScreen({Key? key}) : super(key: key);
+  const ServiceHistoryScreen({super.key});
 
   @override
   State<ServiceHistoryScreen> createState() => _ServiceHistoryScreenState();
@@ -129,8 +130,13 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
                           elevation: 2,
                         ),
                         onPressed: () {
-                          // Implement navigation to expert profile here
                           Navigator.of(ctx).pop(); // Close popup
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ExpertProfileAbout(),
+                            ),
+                          );
                         },
                         child: const Text(
                           "View Profile",

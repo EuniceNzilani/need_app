@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'booking_confirmation.dart';
+import 'negotiation_chat2.dart';
 
 class ServiceSummaryScreen extends StatelessWidget {
   const ServiceSummaryScreen({super.key});
@@ -7,15 +8,20 @@ class ServiceSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const Color greenColor = Color(0xFF23B09B);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const NegotiationChat2Screen()),
+            );
+          },
         ),
         title: const Text(
           'Service Summary',
@@ -38,33 +44,49 @@ class ServiceSummaryScreen extends StatelessWidget {
               // Expert profile section
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 24,
-                    backgroundImage: const AssetImage('Assets/friday chukwu image.jpg'),
+                    backgroundImage: AssetImage(
+                      'Assets/friday chukwu image.jpg',
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Friday Chukwu',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          fontFamily: 'Reddit Sans',
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Friday Chukwu',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            fontFamily: 'Reddit Sans',
+                          ),
                         ),
-                      ),
-                      const Text(
-                        '+234 805 578 9354',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
-                          fontFamily: 'Reddit Sans',
+                        const SizedBox(height: 2),
+                        const Text(
+                          '+234 805 578 9354',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                            fontFamily: 'Reddit Sans',
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        // Rating stars below the phone number
+                        Row(
+                          children: List.generate(
+                            5,
+                            (index) => const Icon(
+                              Icons.star,
+                              color: Color(0xFFFFB800),
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
                   Container(
                     width: 8,
                     height: 8,
@@ -75,19 +97,6 @@ class ServiceSummaryScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              
-              // Rating stars
-              Row(
-                children: List.generate(
-                  5,
-                  (index) => const Icon(
-                    Icons.star,
-                    color: Color(0xFFFFB800),
-                    size: 16,
-                  ),
-                ),
-              ),
-              
               const SizedBox(height: 30),
               const Text(
                 'Summary',
@@ -98,7 +107,7 @@ class ServiceSummaryScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              
+
               // Summary card
               Container(
                 decoration: BoxDecoration(
@@ -121,8 +130,8 @@ class ServiceSummaryScreen extends StatelessWidget {
                       _buildSummaryRow('My Location', 'Ojo Lagos post service'),
                       const SizedBox(height: 16),
                       _buildSummaryRow(
-                        'Description', 
-                        'The oil of the generator needs to be changed and serviced'
+                        'Description',
+                        'The oil of the generator needs to be changed and serviced',
                       ),
                       const SizedBox(height: 16),
                       _buildSummaryRow('Date', 'Monday 17th August'),
@@ -132,9 +141,9 @@ class ServiceSummaryScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 40),
-              
+
               // View status button
               SizedBox(
                 width: double.infinity,
@@ -172,7 +181,7 @@ class ServiceSummaryScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildSummaryRow(String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

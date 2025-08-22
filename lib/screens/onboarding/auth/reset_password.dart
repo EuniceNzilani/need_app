@@ -14,6 +14,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  // Green "Change Password" SVG icon
   static const String passwordSvg = '''
 <?xml version="1.0"?>
 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
@@ -26,18 +27,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 </svg>
 ''';
 
-  String? _validatePhone(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Enter your phone number";
-    }
-    // E.164 format: + and 9-15 digits, e.g. +25413389767
-    final regex = RegExp(r'^\+[1-9]\d{9,14}$');
-    if (!regex.hasMatch(value)) {
-      return "Enter a valid phone number (e.g. +25413389767)";
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,29 +38,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                // Back arrow top left
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 0),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 24,
-                        color: Colors.black,
-                      ),
-                      onPressed:
-                          () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignInScreen(),
-                            ),
-                          ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 24,
+                      color: Colors.black,
                     ),
+                    onPressed:
+                        () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignInScreen(),
+                          ),
+                        ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                // SVG icon container
                 Container(
                   width: 90,
                   height: 90,
@@ -113,7 +97,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                // Text field with shadow instead of border
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -133,7 +116,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   child: TextFormField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
-                    validator: _validatePhone,
+                    // validator removed!
                     style: const TextStyle(
                       fontFamily: 'RedditSans',
                       fontSize: 16,
@@ -150,7 +133,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Replace CustomButton with standard ElevatedButton
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -162,14 +144,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                     ),
                     onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const InputCodeScreen(),
-                          ),
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const InputCodeScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       "Request Password Reset",

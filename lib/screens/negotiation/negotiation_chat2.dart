@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../account/my_profile.dart';
+import '../expert profiles/expert_profile_about.dart';
+import 'negotiation_chat.dart';
 import 'service_summary.dart';
 
 class NegotiationChat2Screen extends StatefulWidget {
@@ -21,25 +23,20 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
       "info":
           "Messages and calls are end-to-end encrypted. Only people in this chat can read, listen to, or share them.",
     },
-    {"type": "sent", "text": "Hi Good Afternoon", "time": "1:35pm"},
+    {"type": "sent", "text": "Hi Good Afternoon", "time": "1:52pm"},
     {
       "type": "sent",
       "text": "I have a problem with my generator, and I need a repair ASAP",
-      "time": "1:35pm",
+      "time": "1:52pm",
     },
-    {"type": "received", "text": "Hi Good Afternoon", "time": "1:45pm"},
+    {"type": "received", "text": "Hi Good Afternoon", "time": "1:54pm"},
     {
       "type": "received",
       "text":
           "Okay sir, Can I see a picture of the generator, then I can know how much it will cost.",
-      "time": "1:45pm",
+      "time": "1:54pm",
     },
-    {
-      "type": "sent",
-      "image":
-          "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-      "time": "1:50pm",
-    },
+    {"type": "sent", "image": "Assets/generator image.png", "time": "1:56pm"},
     {
       "type": "received",
       "text":
@@ -49,7 +46,7 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
     {
       "type": "sent",
       "text": "Okay, when you are done with the servicing, I will pay you",
-      "time": "2:05pm",
+      "time": "2:30pm",
     },
     {"type": "received", "text": "Okay sir!", "time": ""},
   ];
@@ -76,15 +73,15 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
 
   void _sendMessage() {
     _controller.clear();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const NegotiationChat2Screen()),
-    );
+    // For demo, do nothing else
   }
 
   @override
   Widget build(BuildContext context) {
     const Color greenColor = Color(0xFF23B09B);
+    const String profileImage = "Assets/friday chukwu image.jpg";
+    const Color infoBg = Color(0xFFCFE7E5); // blue-green, matches previous file
+    const Color chatBg = Color(0xFFF9F9F9);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -92,24 +89,28 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const NegotiationChatScreen()),
+            );
+          },
         ),
         titleSpacing: 0,
-        title: GestureDetector(
+        title: InkWell(
+          borderRadius: BorderRadius.circular(30),
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const MyProfileScreen()),
+              MaterialPageRoute(builder: (_) => const ExpertProfileAbout()),
             );
           },
           child: Row(
             children: [
               CircleAvatar(
                 radius: 21,
-                backgroundImage: const NetworkImage(
-                  "https://randomuser.me/api/portraits/men/32.jpg",
-                ),
+                backgroundImage: AssetImage(profileImage),
               ),
               const SizedBox(width: 8),
               Column(
@@ -141,15 +142,18 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
       ),
       body: Stack(
         children: [
-          // Background pattern (optional, can be an asset)
-          Positioned.fill(child: Container(color: const Color(0xFFF9F9F9))),
+          Positioned.fill(child: Container(color: chatBg)),
           Column(
             children: [
               const SizedBox(height: 10),
               // Date and Info Message
               if (_messages.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(
+                    top: 10.0,
+                    left: 16.0,
+                    right: 16.0,
+                  ),
                   child: Column(
                     children: [
                       Text(
@@ -167,14 +171,14 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.10),
+                          color: infoBg,
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Text(
                           _messages[0]["info"]!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            color: Colors.teal,
+                            color: Colors.black,
                             fontSize: 13,
                             fontFamily: 'Reddit Sans',
                           ),
@@ -183,11 +187,26 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                     ],
                   ),
                 ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
+              // "Today" label
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 3.0,
+                  horizontal: 0,
+                ),
+                child: Text(
+                  "Today",
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontFamily: 'Reddit Sans',
+                    fontSize: 13,
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
+                    horizontal: 10,
                     vertical: 10,
                   ),
                   itemCount: _messages.length - 1,
@@ -209,33 +228,41 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               clipBehavior: Clip.hardEdge,
-                              child: Image.network(
-                                msg["image"],
-                                width: 120,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(width: 2),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                if ((msg["time"] as String).isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 5,
-                                      top: 2,
-                                    ),
-                                    child: Text(
-                                      msg["time"],
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.grey,
-                                        fontFamily: 'Reddit Sans',
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    msg["image"],
+                                    width: 170,
+                                    height: 110,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  if ((msg["time"] as String).isNotEmpty)
+                                    Positioned(
+                                      bottom: 4,
+                                      right: 7,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.35),
+                                          borderRadius: BorderRadius.circular(
+                                            7,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          msg["time"],
+                                          style: const TextStyle(
+                                            fontSize: 11.5,
+                                            color: Colors.white,
+                                            fontFamily: 'Reddit Sans',
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         );
@@ -248,46 +275,46 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                                 margin: const EdgeInsets.only(
                                   right: 2,
                                   left: 60,
-                                  bottom: 6,
+                                  bottom: 7,
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 15,
+                                  vertical: 11,
+                                  horizontal: 14,
                                 ),
                                 decoration: BoxDecoration(
                                   color: greenColor,
                                   borderRadius: BorderRadius.circular(9),
                                 ),
-                                child: Text(
-                                  msg["text"],
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontFamily: 'Reddit Sans',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 2),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                if ((msg["time"] as String).isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 5,
-                                      top: 2,
-                                    ),
-                                    child: Text(
-                                      msg["time"],
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      msg["text"],
                                       style: const TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.grey,
+                                        color: Colors.white,
+                                        fontSize: 15,
                                         fontFamily: 'Reddit Sans',
                                       ),
                                     ),
-                                  ),
-                              ],
+                                    if ((msg["time"] as String).isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 4,
+                                          right: 0,
+                                        ),
+                                        child: Text(
+                                          msg["time"],
+                                          style: const TextStyle(
+                                            fontSize: 11.5,
+                                            color: Colors.white,
+                                            fontFamily: 'Reddit Sans',
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         );
@@ -301,47 +328,47 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                               margin: const EdgeInsets.only(
                                 left: 2,
                                 right: 60,
-                                bottom: 6,
+                                bottom: 7,
                               ),
                               padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 15,
+                                vertical: 11,
+                                horizontal: 14,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border.all(color: Colors.grey.shade300),
                                 borderRadius: BorderRadius.circular(9),
                               ),
-                              child: Text(
-                                msg["text"],
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontFamily: 'Reddit Sans',
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if ((msg["time"] as String).isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 5,
-                                    top: 2,
-                                  ),
-                                  child: Text(
-                                    msg["time"],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    msg["text"],
                                     style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey,
+                                      color: Colors.black,
+                                      fontSize: 15,
                                       fontFamily: 'Reddit Sans',
                                     ),
                                   ),
-                                ),
-                            ],
+                                  if ((msg["time"] as String).isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 4,
+                                        right: 0,
+                                      ),
+                                      child: Text(
+                                        msg["time"],
+                                        style: const TextStyle(
+                                          fontSize: 11.5,
+                                          color: Colors.grey,
+                                          fontFamily: 'Reddit Sans',
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       );
@@ -393,9 +420,9 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                    bottom: 8,
-                    left: 14,
-                    right: 14,
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
                     top: 2,
                   ),
                   child: Row(
@@ -425,16 +452,8 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                                   ),
                                   minLines: 1,
                                   maxLines: 4,
+                                  style: const TextStyle(fontSize: 15),
                                 ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.camera_alt_outlined,
-                                  color: Colors.grey,
-                                  size: 22,
-                                ),
-                                onPressed: _pickImage,
-                                tooltip: "Send Camera Image",
                               ),
                               IconButton(
                                 icon: const Icon(
@@ -444,6 +463,15 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                                 ),
                                 onPressed: _pickFile,
                                 tooltip: "Attach File",
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: Colors.grey,
+                                  size: 22,
+                                ),
+                                onPressed: _pickImage,
+                                tooltip: "Send Camera Image",
                               ),
                             ],
                           ),
@@ -457,12 +485,14 @@ class _NegotiationChat2ScreenState extends State<NegotiationChat2Screen> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: greenColor,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                            size: 22,
+                          child: const Center(
+                            child: Icon(
+                              Icons.send, // Paper plane, matches screenshot
+                              color: Colors.white,
+                              size: 26,
+                            ),
                           ),
                         ),
                       ),

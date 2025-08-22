@@ -1,8 +1,53 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../widgets/custom_bottom_nav.dart';
 
+// Import all destination screens directly
+import 'change_password.dart';
+import 'personal_details.dart';
+import 'notification_settings.dart';
+import 'frequent_bookings.dart';
+import 'service_history.dart';
+import '../negotiation/message_inbox.dart'; // adjust if path differs
+import 'deactivate.dart';
+import 'about_app.dart';
+import 'edit_profile.dart';
+
+class _LogoutIconPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paintCircle =
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.2
+          ..strokeCap = StrokeCap.round;
+
+    final Paint paintDot =
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.fill;
+
+    final Rect rect = Rect.fromLTWH(2, 2, size.width - 4, size.height - 4);
+    canvas.drawArc(rect, 0.7, 4.15, false, paintCircle);
+
+    final double dotRadius = 2.7;
+    final double angle = 0.7;
+    final double center = size.width / 2;
+    final double r = (size.width - 4) / 2;
+    final Offset dotCenter = Offset(
+      center + r * math.cos(angle),
+      center + r * math.sin(angle),
+    );
+    canvas.drawCircle(dotCenter, dotRadius, paintDot);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({Key? key}) : super(key: key);
+  const MyProfileScreen({super.key});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -18,7 +63,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     } else if (idx == 1) {
       Navigator.pushReplacementNamed(context, '/ai_help_centre');
     }
-    // idx==2 is this profile screen
   }
 
   void _showLogoutDialog() {
@@ -29,19 +73,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Material(
               color: Colors.transparent,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 28),
+                margin: const EdgeInsets.symmetric(horizontal: 32),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 22,
-                  vertical: 24,
+                  horizontal: 24,
+                  vertical: 22,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.22),
-                      blurRadius: 24,
-                      offset: const Offset(0, 6),
+                      color: Colors.black.withAlpha(56),
+                      blurRadius: 18,
+                      offset: const Offset(0, 5),
                     ),
                   ],
                 ),
@@ -53,38 +97,41 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       style: TextStyle(
                         fontFamily: 'RedditSans',
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 15.5,
                         color: Colors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     const Text(
                       "If you Logout, you have to sign in again, by inputting your credentials, to have access to your profile",
                       style: TextStyle(
                         fontFamily: 'RedditSans',
-                        fontSize: 14,
+                        fontSize: 12.5,
                         color: Colors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 18),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
                           child: SizedBox(
-                            height: 42,
+                            height: 38,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF14A388),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(9),
                                 ),
                                 elevation: 2,
+                                padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
                                 Navigator.of(ctx).pop();
+                                // Implement your logout logic here (e.g. clear session), then:
+                                // Use pushReplacement to prevent back navigation to profile
                                 Navigator.pushReplacementNamed(
                                   context,
                                   '/sign_in',
@@ -95,39 +142,36 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 style: TextStyle(
                                   fontFamily: 'RedditSans',
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: 13,
                                   color: Colors.white,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: SizedBox(
-                            height: 42,
+                            height: 38,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(9),
                                   side: BorderSide.none,
                                 ),
                                 elevation: 0,
+                                padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
                                 Navigator.of(ctx).pop();
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/my_profile',
-                                );
                               },
                               child: const Text(
                                 "Cancel",
                                 style: TextStyle(
                                   fontFamily: 'RedditSans',
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: 13,
                                   color: Colors.black,
                                 ),
                               ),
@@ -146,25 +190,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Widget _buildProfileCard() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.09),
-            blurRadius: 16,
-            offset: const Offset(0, 3),
+            color: Colors.black.withAlpha(23),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         children: [
-          // Profile Image
           Container(
-            width: 58,
-            height: 58,
+            width: 45,
+            height: 45,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFFE7F6F3),
@@ -174,15 +217,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.10),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withAlpha(25),
+                  blurRadius: 3,
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 14),
-          // Name & Info
+          const SizedBox(width: 13),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,16 +234,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   style: TextStyle(
                     fontFamily: 'RedditSans',
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 13,
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 3),
                 Text(
                   "Ojo East Service, Lagos State",
                   style: TextStyle(
                     fontFamily: 'RedditSans',
-                    fontSize: 13,
+                    fontSize: 10.5,
                     color: Colors.black,
                   ),
                 ),
@@ -210,39 +252,41 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   "+234 805 578 9164",
                   style: TextStyle(
                     fontFamily: 'RedditSans',
-                    fontSize: 13,
+                    fontSize: 10.5,
                     color: Colors.black,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          // Edit Profile Button
+          const SizedBox(width: 6),
           SizedBox(
-            height: 36,
+            height: 27,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF7F7F7),
                 foregroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(7),
                 ),
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               ),
-              icon: const Icon(Icons.edit, size: 18),
+              icon: const Icon(Icons.edit, size: 17, color: Colors.black),
               label: const Text(
                 "Edit Profile",
                 style: TextStyle(
                   fontFamily: 'RedditSans',
                   fontWeight: FontWeight.bold,
-                  fontSize: 13,
+                  fontSize: 10,
                   color: Colors.black,
                 ),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/edit_profile');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+                );
               },
             ),
           ),
@@ -254,43 +298,66 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget _buildSettingItem(
     String title, {
     required IconData icon,
-    VoidCallback? onTap,
+    required VoidCallback onTap,
+    bool isLogout = false,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ListTile(
-        onTap: onTap,
-        leading: Icon(icon, color: const Color(0xFF14A388), size: 24),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontFamily: 'RedditSans',
-            fontWeight: FontWeight.w500,
-            fontSize: 15,
-            color: Colors.black,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(11),
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(11),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(20),
+                  blurRadius: 7,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ListTile(
+              dense: true,
+              minLeadingWidth: 0,
+              leading:
+                  isLogout
+                      ? SizedBox(width: 24, height: 24, child: _logoutIcon())
+                      : Icon(icon, color: Colors.black, size: 24),
+              title: Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: 'RedditSans',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right,
+                color: Colors.black,
+                size: 22,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 2,
+              ),
+              tileColor: Colors.white,
+            ),
           ),
         ),
-        trailing: const Icon(
-          Icons.chevron_right,
-          color: Colors.black,
-          size: 24,
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
-        tileColor: Colors.white,
       ),
     );
+  }
+
+  Widget _logoutIcon() {
+    return CustomPaint(painter: _LogoutIconPainter(), size: const Size(24, 24));
   }
 
   @override
@@ -306,7 +373,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             "<",
             style: TextStyle(
               color: Colors.black,
-              fontSize: 28,
+              fontSize: 24,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -317,127 +384,128 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           style: TextStyle(
             fontFamily: 'RedditSans',
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 16,
             color: Colors.black,
           ),
         ),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-          children: [
-            _buildProfileCard(),
-            const SizedBox(height: 2),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "Account Settings",
-                style: TextStyle(
-                  fontFamily: 'RedditSans',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            _buildSettingItem(
-              'Change Pasword',
-              icon: Icons.lock_outline,
-              onTap: () => Navigator.pushNamed(context, '/change_password'),
-            ),
-            _buildSettingItem(
-              'Personal Details',
-              icon: Icons.person_outline,
-              onTap: () => Navigator.pushNamed(context, '/personal_details'),
-            ),
-            _buildSettingItem(
-              'Notifications settings',
-              icon: Icons.notifications_none,
-              onTap: () => Navigator.pushNamed(context, '/notifications'),
-            ),
-            _buildSettingItem(
-              'Frequently Used Experts',
-              icon: Icons.people_outline,
-              onTap:
-                  () =>
-                      Navigator.pushNamed(context, '/frequently_used_experts'),
-            ),
-            _buildSettingItem(
-              'Service History',
-              icon: Icons.history,
-              onTap: () => Navigator.pushNamed(context, '/service_history'),
-            ),
-            _buildSettingItem(
-              'Messages',
-              icon: Icons.message_outlined,
-              onTap: () => Navigator.pushNamed(context, '/messages'),
-            ),
-            _buildSettingItem(
-              'Deactivate/Delete Account',
-              icon: Icons.delete_outline,
-              onTap:
-                  () => Navigator.pushNamed(
-                    context,
-                    '/deactivate_delete_account',
-                  ),
-            ),
-            _buildSettingItem(
-              'About app',
-              icon: Icons.info_outline,
-              onTap: () => Navigator.pushNamed(context, '/about_app'),
-            ),
-            // Logout Button
-            const SizedBox(height: 6),
-            InkWell(
-              borderRadius: BorderRadius.circular(14),
-              onTap: _showLogoutDialog,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 2,
-                ),
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.exit_to_app,
-                    color: Color(0xFF14A388),
-                    size: 24,
-                  ),
-                  title: const Text(
-                    'Logout',
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildProfileCard(),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    "Account Settings",
                     style: TextStyle(
                       fontFamily: 'RedditSans',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
                       color: Colors.black,
                     ),
+                    textAlign: TextAlign.left,
                   ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Colors.black,
-                    size: 24,
-                  ),
-                  contentPadding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  tileColor: Colors.white,
                 ),
-              ),
+                _buildSettingItem(
+                  'Change Password',
+                  icon: Icons.lock_outline,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Personal Details',
+                  icon: Icons.person_outline,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PersonalDetailsScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Notifications settings',
+                  icon: Icons.notifications_none,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationSettingsScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Frequently Used Experts',
+                  icon: Icons.people_outline,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const FrequentBookingsScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Service History',
+                  icon: Icons.history,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ServiceHistoryScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Messages',
+                  icon: Icons.message_outlined,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MessageInboxScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Deactivate/Delete Account',
+                  icon: Icons.delete_outline,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const DeactivateAccountScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'About app',
+                  icon: Icons.info_outline,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AboutAppScreen(),
+                        ),
+                      ),
+                ),
+                _buildSettingItem(
+                  'Logout',
+                  icon: Icons.exit_to_app, // dummy, replaced with custom
+                  onTap: _showLogoutDialog,
+                  isLogout: true,
+                ),
+              ],
             ),
-            const SizedBox(height: 18),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: CustomBottomNav(

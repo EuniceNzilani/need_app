@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../widgets/custom_bottom_nav.dart';
+import '../../../widgets/custom_bottom_nav.dart' as custom_nav;
+import '../expert profiles/expert_profile_about.dart';
 
 class FrequentBookingsScreen extends StatefulWidget {
   const FrequentBookingsScreen({Key? key}) : super(key: key);
@@ -39,12 +40,10 @@ class _FrequentBookingsScreenState extends State<FrequentBookingsScreen> {
       child: Row(
         children: [
           // Avatar
-          CircleAvatar(
+          const CircleAvatar(
             radius: 24,
-            backgroundImage: const AssetImage(
-              "Assets/friday_chuckwu_image.jpg",
-            ),
-            backgroundColor: Colors.grey[200],
+            backgroundImage: AssetImage("Assets/friday chukwu image.jpg"),
+            backgroundColor: Colors.transparent,
           ),
           const SizedBox(width: 10),
           // Name & stars
@@ -87,7 +86,12 @@ class _FrequentBookingsScreenState extends State<FrequentBookingsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 18),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/expert_profile_about');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ExpertProfileAbout(),
+                  ),
+                );
               },
               child: const Text(
                 "View Profile",

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_bottom_nav.dart';
+import '../home.dart';
+import '../ai/faqs.dart';
+import '../ai/talk_to_agent.dart';
+import '../ai/chat_with_ai.dart';
 
 class AiHelpCentreScreen extends StatefulWidget {
   const AiHelpCentreScreen({Key? key}) : super(key: key);
@@ -14,7 +18,10 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
   void _onNavTap(int idx) {
     setState(() => _currentIndex = idx);
     if (idx == 0) {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const Home()),
+      );
     } else if (idx == 2) {
       Navigator.pushReplacementNamed(context, '/my_profile');
     }
@@ -24,7 +31,7 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
   Widget _helpButton({
     required IconData icon,
     required String label,
-    required String route,
+    required VoidCallback onTap,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
@@ -56,7 +63,7 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
           color: Colors.black,
           size: 24,
         ),
-        onTap: () => Navigator.pushNamed(context, route),
+        onTap: onTap,
       ),
     );
   }
@@ -70,8 +77,12 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
+          onPressed:
+              () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const Home()),
+              ),
         ),
         title: const Text(
           "AI Help Center",
@@ -91,22 +102,46 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
               _helpButton(
                 icon: Icons.help_outline,
                 label: "FAQs",
-                route: '/faqs', // points to faqs.dart
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const FaqsScreen()),
+                  );
+                },
               ),
               _helpButton(
                 icon: Icons.headset_mic_outlined,
                 label: "Talk to Agent",
-                route: '/talk_to_agent', // points to talk_to_agent.dart
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TalkToAgentScreen(),
+                    ),
+                  );
+                },
               ),
               _helpButton(
                 icon: Icons.report_gmailerrorred_outlined,
                 label: "Report an Issue",
-                route: '/talk_to_agent', // points to talk_to_agent.dart
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TalkToAgentScreen(),
+                    ),
+                  );
+                },
               ),
               _helpButton(
                 icon: Icons.smart_toy_outlined,
                 label: "Chat with AI Assistant",
-                route: '/chat_with_ai', // points to chat_with_ai.dart
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ChatWithAiScreen()),
+                  );
+                },
               ),
             ],
           ),

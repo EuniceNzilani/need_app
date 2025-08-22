@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_bottom_nav.dart';
+import 'ai_assistant.dart';
 
 class ChatWithAiScreen extends StatefulWidget {
   const ChatWithAiScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -90,7 +91,13 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
                     elevation: 2,
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/ai_assistant');
+                    // Directly push to ai_assistant.dart screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AiAssistantScreen(),
+                      ),
+                    );
                   },
                   child: const Text(
                     "Get Started",
@@ -114,3 +121,6 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
     );
   }
 }
+
+// Make sure to import your ai_assistant.dart at the top if it's not already imported:
+//

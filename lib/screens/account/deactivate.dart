@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_bottom_nav.dart';
+// Import your onboarding screens for navigation
+import '../onboarding/sign_up_screen.dart';
+import '../onboarding/sign_in_screen.dart';
 
 class DeactivateAccountScreen extends StatefulWidget {
-  const DeactivateAccountScreen({Key? key}) : super(key: key);
+  const DeactivateAccountScreen({super.key});
 
   @override
   State<DeactivateAccountScreen> createState() =>
@@ -101,9 +104,11 @@ class _DeactivateAccountScreenState extends State<DeactivateAccountScreen> {
                         ),
                         onPressed: () {
                           Navigator.of(ctx).pop();
-                          Navigator.pushReplacementNamed(
+                          Navigator.pushReplacement(
                             context,
-                            '/sign_up_screen',
+                            MaterialPageRoute(
+                              builder: (context) => const SignUpScreen(),
+                            ),
                           );
                         },
                         child: const Text(
@@ -204,9 +209,11 @@ class _DeactivateAccountScreenState extends State<DeactivateAccountScreen> {
                         ),
                         onPressed: () {
                           Navigator.of(ctx).pop();
-                          Navigator.pushReplacementNamed(
+                          Navigator.pushReplacement(
                             context,
-                            '/sign_in_screen',
+                            MaterialPageRoute(
+                              builder: (context) => const SignInScreen(),
+                            ),
                           );
                         },
                         child: const Text(

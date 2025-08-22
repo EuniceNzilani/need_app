@@ -14,6 +14,7 @@ import 'screens/import from china/track_request.dart'
 import 'screens/expert profiles/services_available.dart';
 import 'screens/ai/ai_help_centre.dart';
 import 'screens/account/my_profile.dart';
+import 'screens/negotiation/message_inbox.dart';
 
 void main() {
   runApp(const NEEDApp());
@@ -62,6 +63,7 @@ class NEEDApp extends StatelessWidget {
         '/ai_help_centre': (context) => const AiHelpCentreScreen(),
         '/account': (context) => const MyProfileScreen(),
         '/my_profile': (context) => const MyProfileScreen(),
+        '/message_inbox': (context) => const MessageInboxScreen(),
       },
     );
   }

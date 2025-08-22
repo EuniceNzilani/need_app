@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_bottom_nav.dart';
+// Import your request password change screen directly
+import 'auth/request_password_change.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key? key}) : super(key: key);
@@ -78,11 +80,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 24),
               InkWell(
                 borderRadius: BorderRadius.circular(14),
-                onTap:
-                    () => Navigator.pushNamed(
-                      context,
-                      '/request_password_change',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RequestPasswordChangeScreen(),
                     ),
+                  );
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,

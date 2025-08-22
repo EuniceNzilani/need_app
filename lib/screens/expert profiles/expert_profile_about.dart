@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../home.dart';
+import '../ai/ai_help_centre.dart';
+import '../account/my_profile.dart';
+import 'services_available.dart';
+import 'reviews.dart';
 import '../negotiation/negotiation_chat.dart';
 import '../negotiation/service_summary.dart';
-import 'expert_profile_jobs.dart' as jobs;
-import 'expert_profile_review.dart';
 
-// --- Bottom Nav Widget ---
 class CustomBottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -18,30 +19,49 @@ class CustomBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const selectedColor = Color(0xFF14A388);
+    // All icons black as requested
+    const selectedColor = Colors.black;
     const unselectedColor = Colors.black;
 
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(15), // 0.06 * 255 = 15
-            blurRadius: 10,
-            offset: const Offset(0, -3),
-          ),
-        ],
-      ),
+      decoration: const BoxDecoration(color: Colors.white),
       child: BottomNavigationBar(
         backgroundColor: Colors.white,
         currentIndex: currentIndex,
-        onTap: (index) => onTap(index),
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const Home()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AiHelpCentreScreen(),
+                ),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyProfileScreen(),
+                ),
+              );
+              break;
+          }
+          onTap(index);
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: selectedColor,
         unselectedItemColor: unselectedColor,
         selectedFontSize: 12,
         unselectedFontSize: 12,
         showUnselectedLabels: true,
+        elevation: 0,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
@@ -49,8 +69,8 @@ class CustomBottomNav extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.smart_toy_outlined),
-            activeIcon: Icon(Icons.smart_toy_rounded),
+            icon: Icon(Icons.support_agent),
+            activeIcon: Icon(Icons.support_agent),
             label: 'AI Support',
           ),
           BottomNavigationBarItem(
@@ -71,201 +91,190 @@ class ExpertProfileAbout extends StatefulWidget {
   State<ExpertProfileAbout> createState() => _ExpertProfileAboutState();
 }
 
-class _ExpertProfileAboutState extends State<ExpertProfileAbout> {
-  final int _currentTab = 0;
+class _ExpertProfileAboutState extends State<ExpertProfileAbout>
+    with SingleTickerProviderStateMixin {
+  int _currentTab = 2; // Review as default for screenshot demonstration
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentTab);
+  }
 
   void _onTab(int index) {
     if (_currentTab == index) return;
-    switch (index) {
-      case 0:
-        // Do nothing, already here
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const jobs.ExpertProfileJobs()),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const ExpertProfileReview()),
-        );
-        break;
-    }
+    setState(() {
+      _currentTab = index;
+    });
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.ease,
+    );
   }
 
-  void _onNavTap(int index) {
-    if (index == 0) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const Home()),
-      );
-    }
-    // Add more navigation logic for AI Support or Account here if needed.
+  void _onNavTap(int index) {}
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildStatsCard(String label, String value) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+              fontFamily: 'Reddit Sans',
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(height: 1),
+          Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+              fontFamily: 'Reddit Sans',
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     const String mapImage = "Assets/map image.png";
+    const String profileImage = "Assets/friday chukwu image.jpg";
     const Color greenColor = Color(0xFF23B09B);
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed:
-              () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const Home()),
-              ),
-        ),
-        titleSpacing: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Ojo Lagos Post...',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(0, 0),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                alignment: Alignment.centerLeft,
-                textStyle: const TextStyle(decoration: TextDecoration.none),
-              ),
-              child: const Text(
-                'Edit Location',
-                style: TextStyle(
-                  color: Color(0xFF23B09B),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Reddit Sans',
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 6, top: 8),
-            child: const Icon(
-              Icons.group_outlined,
-              color: Colors.black,
-              size: 22,
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(right: 14, top: 8),
-            child: const Icon(
-              Icons.settings_outlined,
-              color: Colors.black,
-              size: 22,
-            ),
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Stack(
-            alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
               Image.asset(
                 mapImage,
-                height: 150,
+                height: 110,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
               Positioned(
-                bottom: -40,
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundColor: Colors.white,
-                  child: CircleAvatar(
-                    radius: 44,
-                    backgroundImage: const NetworkImage(
-                      "https://randomuser.me/api/portraits/men/32.jpg",
-                    ),
+                top: 13,
+                left: 6,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    color: Colors.black,
+                    size: 26,
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ServicesAvailable(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                bottom: -32,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      CircleAvatar(
+                        radius: 38,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 34,
+                          backgroundImage: AssetImage(profileImage),
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Icon(
+                          Icons.check_circle,
+                          color: greenColor,
+                          size: 22,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 50),
-          Column(
-            children: [
-              const Text(
-                "Friday Chukwu",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  fontFamily: 'Reddit Sans',
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 3),
-              const Text(
-                "+234 805 578 9354",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontFamily: 'Reddit Sans',
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Available",
-                    style: TextStyle(
-                      color: greenColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                      fontFamily: 'Reddit Sans',
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  ...List.generate(
-                    5,
-                    (i) => const Icon(
-                      Icons.star,
-                      color: Color(0xFFFFB800),
-                      size: 17,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 44),
+          // Stats first row (no border)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: Row(
               children: [
-                Expanded(child: _StatCard(label: "Total Jobs", value: "10")),
-                const SizedBox(width: 8),
-                Expanded(child: _StatCard(label: "Ratings", value: "5/5")),
-                const SizedBox(width: 8),
-                Expanded(child: _StatCard(label: "Distance", value: "<5km")),
+                _buildStatsCard("Total Jobs", "10"),
+                _buildStatsCard("Ratings", "5/5"),
+                _buildStatsCard("Distance", "<5km"),
               ],
             ),
           ),
-          const SizedBox(height: 17),
+          const SizedBox(height: 16),
+          Text(
+            "Friday Chukwu",
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 17,
+              fontFamily: 'Reddit Sans',
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            "+234 805 578 9354",
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Reddit Sans',
+              color: Colors.black.withOpacity(0.65),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...List.generate(
+                5,
+                (i) =>
+                    const Icon(Icons.star, color: Color(0xFFFFB800), size: 13),
+              ),
+            ],
+          ),
+          // Available below the stars
+          const SizedBox(height: 3),
+          Text(
+            "Available",
+            style: TextStyle(
+              color: greenColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 11,
+              fontFamily: 'Reddit Sans',
+            ),
+          ),
+          const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -275,7 +284,7 @@ class _ExpertProfileAboutState extends State<ExpertProfileAbout> {
                   onTap: () => _onTab(0),
                 ),
                 _TabButton(
-                  label: "Photos",
+                  label: "Jobs",
                   selected: _currentTab == 1,
                   onTap: () => _onTab(1),
                 ),
@@ -287,180 +296,194 @@ class _ExpertProfileAboutState extends State<ExpertProfileAbout> {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
-                Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 18,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Bio",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            fontFamily: 'Reddit Sans',
-                          ),
+                // About Section (unchanged)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 11.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 12,
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          "A dedicated and hardworking individual with a passion for agriculture and a proven track record in farm operations. Possessing 5 years of experience in planting, cultivating, and harvesting a variety of crops, including fruits and vegetables.",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Reddit Sans',
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 18,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Skills",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            fontFamily: 'Reddit Sans',
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Generator Repair\nVulcanizer\nVehicle Service",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Reddit Sans',
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const NegotiationChatScreen(),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.09),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
                             ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: greenColor,
-                          side: const BorderSide(color: greenColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          ],
                         ),
-                        child: const Text(
-                          "Start Chat",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Reddit Sans',
-                            fontSize: 15,
-                          ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Bio",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                                fontFamily: 'Reddit Sans',
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              "A dedicated and hardworking individual with a passion for agriculture and a proven track record in farm operations. Possessing 5 years of experience in planting, cultivating, and harvesting a variety of crops, including fruits and vegetables.",
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontFamily: 'Reddit Sans',
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ServiceSummaryScreen(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: greenColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 2),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 12,
                         ),
-                        child: const Text(
-                          "Accept Expert",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Reddit Sans',
-                            fontSize: 15,
-                          ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.09),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Skills",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                                fontFamily: 'Reddit Sans',
+                              ),
+                            ),
+                            SizedBox(height: 7),
+                            Text(
+                              "Generator Repair",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Reddit Sans',
+                                color: Colors.black87,
+                              ),
+                            ),
+                            SizedBox(height: 3),
+                            Text(
+                              "Vulcanizer",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Reddit Sans',
+                                color: Colors.black87,
+                              ),
+                            ),
+                            SizedBox(height: 3),
+                            Text(
+                              "Vehicle Service",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Reddit Sans',
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8),
+                // Jobs Section
+                const _JobsTabContent(),
+                // Review Section
+                const _ReviewTabContent(),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(11, 0, 11, 7),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NegotiationChatScreen(),
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: greenColor,
+                      side: const BorderSide(color: greenColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                    ),
+                    child: const Text(
+                      "Start Chat",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Reddit Sans',
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ServiceSummaryScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: greenColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                    ),
+                    child: const Text(
+                      "Accept Expert",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Reddit Sans',
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
       bottomNavigationBar: CustomBottomNav(currentIndex: 0, onTap: _onNavTap),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  const _StatCard({required this.label, required this.value});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 54,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F9FA),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12.5, color: Colors.black54),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -486,15 +509,15 @@ class _TabButton extends StatelessWidget {
               style: TextStyle(
                 color: selected ? const Color(0xFF23B09B) : Colors.black87,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                fontSize: 15.5,
+                fontSize: 14,
                 fontFamily: 'Reddit Sans',
               ),
             ),
             const SizedBox(height: 2),
             if (selected)
               Container(
-                width: 24,
-                height: 2.5,
+                width: 18,
+                height: 2,
                 decoration: BoxDecoration(
                   color: const Color(0xFF23B09B),
                   borderRadius: BorderRadius.circular(10),
@@ -503,6 +526,211 @@ class _TabButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _JobsTabContent extends StatelessWidget {
+  const _JobsTabContent();
+  @override
+  Widget build(BuildContext context) {
+    List<String> jobImages = List.generate(6, (i) => "Assets/flowerneed.jpg");
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 11),
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 3.0, bottom: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Previous Jobs",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  fontFamily: 'Reddit Sans',
+                ),
+              ),
+            ),
+          ),
+          GridView.builder(
+            shrinkWrap: true,
+            itemCount: jobImages.length,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1.1,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+            ),
+            itemBuilder:
+                (context, idx) => ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(jobImages[idx], fit: BoxFit.cover),
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReviewTabContent extends StatelessWidget {
+  const _ReviewTabContent();
+  @override
+  Widget build(BuildContext context) {
+    // Use friday chukwu image for all avatars in review as requested
+    const String profileImage = "Assets/friday chukwu image.jpg";
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 11),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(top: 0, bottom: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.09),
+                  blurRadius: 13,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and See more
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Reviews",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          fontFamily: 'Reddit Sans',
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ExpertReviewsScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "See more",
+                          style: TextStyle(
+                            color: Color(0xFF23B09B),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            fontFamily: 'Reddit Sans',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const _ReviewRow(
+                    image: profileImage,
+                    name: "Musa Muhammed",
+                    review: "Excellent Work delivered!!",
+                    stars: 5,
+                  ),
+                  const SizedBox(height: 5),
+                  const _ReviewRow(
+                    image: profileImage,
+                    name: "Mariam Olamide",
+                    review: "Very punctual and honest",
+                    stars: 5,
+                  ),
+                  const SizedBox(height: 5),
+                  const _ReviewRow(
+                    image: profileImage,
+                    name: "Joshua David",
+                    review: "Excellent!",
+                    stars: 5,
+                  ),
+                  const SizedBox(height: 5),
+                  const _ReviewRow(
+                    image: profileImage,
+                    name: "Victor James",
+                    review: "Good job done!",
+                    stars: 5,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReviewRow extends StatelessWidget {
+  final String image;
+  final String name;
+  final String review;
+  final int stars;
+
+  const _ReviewRow({
+    required this.image,
+    required this.name,
+    required this.review,
+    required this.stars,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // User image
+        CircleAvatar(radius: 18, backgroundImage: AssetImage(image)),
+        const SizedBox(width: 10),
+        // Name and review
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.5,
+                  fontFamily: 'Reddit Sans',
+                ),
+              ),
+              Text(
+                review,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 11,
+                  fontFamily: 'Reddit Sans',
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Stars (now gold/yellow as requested)
+        Row(
+          children: List.generate(
+            5,
+            (i) => const Icon(
+              Icons.star,
+              color: Color(0xFFFFB800), // Gold/yellow
+              size: 16,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

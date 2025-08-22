@@ -87,11 +87,14 @@ class CategoryPopupDialog extends StatelessWidget {
   }
 }
 
-class BrandPopupDialog extends StatelessWidget {
-  final List<String> brands;
+class SpecificProductPopup extends StatelessWidget {
+  final String brand;
+  final List<String> products;
   final Color greenColor;
-  const BrandPopupDialog({
-    required this.brands,
+
+  const SpecificProductPopup({
+    required this.brand,
+    required this.products,
     required this.greenColor,
     super.key,
   });
@@ -109,9 +112,9 @@ class BrandPopupDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Select Brand',
-                  style: TextStyle(
+                Text(
+                  'Select $brand Model',
+                  style: const TextStyle(
                     fontFamily: 'Reddit Sans',
                     fontWeight: FontWeight.w700,
                     fontSize: 19,
@@ -124,34 +127,40 @@ class BrandPopupDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 14),
-            Wrap(
-              spacing: 14,
-              runSpacing: 12,
-              children:
-                  brands
-                      .map(
-                        (brand) => ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: greenColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 20,
+            Container(
+              constraints: const BoxConstraints(maxHeight: 400),
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 14,
+                  runSpacing: 12,
+                  children:
+                      products
+                          .map(
+                            (product) => ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: greenColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 20,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(13),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontFamily: 'Reddit Sans',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              onPressed:
+                                  () => Navigator.of(context).pop(product),
+                              child: Text(product),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(13),
-                            ),
-                            textStyle: const TextStyle(
-                              fontFamily: 'Reddit Sans',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          onPressed: () => Navigator.of(context).pop(brand),
-                          child: Text(brand),
-                        ),
-                      )
-                      .toList(),
+                          )
+                          .toList(),
+                ),
+              ),
             ),
           ],
         ),
@@ -160,126 +169,295 @@ class BrandPopupDialog extends StatelessWidget {
   }
 }
 
-class AppleIphoneProductPopup extends StatelessWidget {
-  const AppleIphoneProductPopup({super.key});
+class ProductSuggestionsWidget extends StatefulWidget {
+  final String? selectedCategory;
+  final String? selectedBrand;
+  final String? selectedProduct;
+  final Color greenColor;
+  final double scale;
+  final Function(String?) onBrandSelected;
+  final Function(String?) onProductSelected;
 
-  Widget productText(BuildContext context, String name) => GestureDetector(
-    onTap: () => Navigator.of(context).pop(name),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
-      child: Text(
-        name,
-        style: const TextStyle(
-          fontFamily: 'Reddit Sans',
-          fontSize: 16,
-          color: Colors.black,
-        ),
-      ),
-    ),
-  );
+  const ProductSuggestionsWidget({
+    required this.selectedCategory,
+    required this.selectedBrand,
+    required this.selectedProduct,
+    required this.greenColor,
+    required this.scale,
+    required this.onBrandSelected,
+    required this.onProductSelected,
+    super.key,
+  });
+
+  @override
+  State<ProductSuggestionsWidget> createState() =>
+      _ProductSuggestionsWidgetState();
+}
+
+class _ProductSuggestionsWidgetState extends State<ProductSuggestionsWidget> {
+  bool _showBrandSuggestions = false;
+  List<String> _filteredBrands = [];
+
+  final Map<String, List<String>> _brandsByCategory = {
+    "Mobile Phones": [
+      "Apple",
+      "Samsung",
+      "Xiaomi",
+      "OnePlus",
+      "Google Pixel",
+      "Vivo",
+      "Oppo",
+      "Huawei",
+      "Motorola",
+      "Infinix",
+      "Tecno",
+      "Itel",
+      "Nokia",
+      "Realme",
+    ],
+    "Laptops": [
+      "Apple MacBook",
+      "Dell",
+      "HP",
+      "Lenovo",
+      "Asus",
+      "Acer",
+      "Microsoft Surface",
+      "MSI",
+      "Razer",
+      "Alienware",
+    ],
+    "Electronics": [
+      "Sony",
+      "LG",
+      "Panasonic",
+      "Philips",
+      "JBL",
+      "Bose",
+      "Canon",
+      "Nikon",
+    ],
+  };
+
+  final Map<String, List<String>> _productsByBrand = {
+    "Apple": [
+      "iPhone 15 Pro Max",
+      "iPhone 15 Pro",
+      "iPhone 15 Plus",
+      "iPhone 15",
+      "iPhone 14 Pro Max",
+      "iPhone 14 Pro",
+      "iPhone 14 Plus",
+      "iPhone 14",
+      "iPhone 13 Pro Max",
+      "iPhone 13 Pro",
+      "iPhone 13",
+      "iPhone 13 Mini",
+      "iPhone 12 Pro Max",
+      "iPhone 12 Pro",
+      "iPhone 12",
+      "iPhone 12 Mini",
+      "iPhone 11 Pro Max",
+      "iPhone 11 Pro",
+      "iPhone 11",
+      "iPhone SE (3rd Gen)",
+    ],
+    "Samsung": [
+      "Galaxy S24 Ultra",
+      "Galaxy S24+",
+      "Galaxy S24",
+      "Galaxy S23 Ultra",
+      "Galaxy S23+",
+      "Galaxy S23",
+      "Galaxy Note 20 Ultra",
+      "Galaxy Note 20",
+      "Galaxy A54 5G",
+      "Galaxy A34 5G",
+      "Galaxy Z Fold 5",
+      "Galaxy Z Flip 5",
+    ],
+    "Xiaomi": [
+      "Xiaomi 14 Ultra",
+      "Xiaomi 14",
+      "Xiaomi 13T Pro",
+      "Xiaomi 13T",
+      "Redmi Note 13 Pro",
+      "Redmi Note 13",
+      "Redmi Note 12 Pro",
+      "Redmi Note 12",
+      "Redmi 12",
+      "Redmi 11",
+      "Redmi 10",
+      "POCO X6 Pro",
+      "POCO X6",
+      "POCO F5 Pro",
+      "POCO F5",
+    ],
+    "OnePlus": [
+      "OnePlus 12",
+      "OnePlus 11",
+      "OnePlus 10T",
+      "OnePlus 10 Pro",
+      "OnePlus 9 Pro",
+      "OnePlus 9",
+      "OnePlus Nord 3",
+      "OnePlus Nord CE 3",
+    ],
+    "Google Pixel": [
+      "Pixel 8 Pro",
+      "Pixel 8",
+      "Pixel 7a",
+      "Pixel 7 Pro",
+      "Pixel 7",
+      "Pixel 6a",
+      "Pixel 6 Pro",
+      "Pixel 6",
+    ],
+    "Apple MacBook": [
+      "MacBook Air M3 13-inch",
+      "MacBook Air M3 15-inch",
+      "MacBook Air M2 13-inch",
+      "MacBook Air M2 15-inch",
+      "MacBook Pro M3 14-inch",
+      "MacBook Pro M3 16-inch",
+      "MacBook Pro M2 13-inch",
+      "MacBook Pro M2 14-inch",
+      "MacBook Pro M2 16-inch",
+    ],
+  };
+
+  void _showBrandDropdown() {
+    if (widget.selectedCategory == null) return;
+    final brands = _brandsByCategory[widget.selectedCategory] ?? [];
+    if (brands.isEmpty) return;
+
+    setState(() {
+      _filteredBrands = brands;
+      _showBrandSuggestions = !_showBrandSuggestions;
+    });
+  }
+
+  void _selectBrand(String brand) async {
+    setState(() {
+      _showBrandSuggestions = false;
+    });
+
+    widget.onBrandSelected(brand);
+
+    // Show specific product popup if brand has products
+    final products = _productsByBrand[brand];
+    if (products != null && products.isNotEmpty) {
+      final selectedProduct = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SpecificProductPopup(
+            brand: brand,
+            products: products,
+            greenColor: widget.greenColor,
+          );
+        },
+      );
+
+      if (selectedProduct != null) {
+        widget.onProductSelected(selectedProduct);
+      }
+    }
+  }
+
+  String _getDisplayText() {
+    if (widget.selectedProduct != null) {
+      return widget.selectedProduct!;
+    } else if (widget.selectedBrand != null) {
+      return widget.selectedBrand!;
+    } else {
+      return 'select product item';
+    }
+  }
+
+  Color _getTextColor() {
+    if (widget.selectedProduct != null || widget.selectedBrand != null) {
+      return Colors.black;
+    } else {
+      return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Select Apple iPhone Model',
-                style: TextStyle(
-                  fontFamily: 'Reddit Sans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: _showBrandDropdown,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14.0 * widget.scale),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha((0.10 * 255).round()),
+                  blurRadius: 10 * widget.scale,
+                  spreadRadius: 1 * widget.scale,
+                  offset: Offset(0, 2 * widget.scale),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // iPhone 14 Series
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'iPhone 14 Series',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        productText(context, 'iPhone 14'),
-                        productText(context, 'iPhone 14 Plus'),
-                        productText(context, 'iPhone 14 Pro'),
-                        productText(context, 'iPhone 14 Pro Max'),
-                      ],
+              ],
+            ),
+            padding: EdgeInsets.symmetric(
+              vertical: 16 * widget.scale,
+              horizontal: 15 * widget.scale,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _getDisplayText(),
+                    style: TextStyle(
+                      fontFamily: 'Reddit Sans',
+                      fontSize: 15 * widget.scale,
+                      color: _getTextColor(),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  // iPhone 13 Series
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'iPhone 13 Series',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        productText(context, 'iPhone 13 Mini'),
-                        productText(context, 'iPhone 13'),
-                        productText(context, 'iPhone 13 Pro'),
-                        productText(context, 'iPhone 13 Pro Max'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  // iPhone 12 Series
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'iPhone 12 Series',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        productText(context, 'iPhone 12 Mini'),
-                        productText(context, 'iPhone 12'),
-                        productText(context, 'iPhone 12 Pro'),
-                        productText(context, 'iPhone 12 Pro Max'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Other models as a column
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Older Models',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  productText(context, 'iPhone 11 Pro Max'),
-                  productText(context, 'iPhone 11 Pro'),
-                  productText(context, 'iPhone 11'),
-                  productText(context, 'iPhone XS Max'),
-                  productText(context, 'iPhone XS'),
-                  productText(context, 'iPhone XR'),
-                  productText(context, 'iPhone X'),
-                  productText(context, 'iPhone 8 Plus'),
-                  productText(context, 'iPhone 8'),
-                  productText(context, 'iPhone 7 Plus'),
-                  productText(context, 'iPhone 7'),
-                  productText(context, 'Other'),
-                ],
-              ),
-            ],
+                ),
+                Icon(Icons.expand_more, color: Colors.black54),
+              ],
+            ),
           ),
         ),
-      ),
+        if (_showBrandSuggestions) ...[
+          SizedBox(height: 8 * widget.scale),
+          Container(
+            constraints: BoxConstraints(maxHeight: 200 * widget.scale),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0 * widget.scale),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha((0.10 * 255).round()),
+                  blurRadius: 8 * widget.scale,
+                  spreadRadius: 1 * widget.scale,
+                  offset: Offset(0, 2 * widget.scale),
+                ),
+              ],
+            ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _filteredBrands.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    _filteredBrands[index],
+                    style: TextStyle(
+                      fontFamily: 'Reddit Sans',
+                      fontSize: 14 * widget.scale,
+                    ),
+                  ),
+                  onTap: () => _selectBrand(_filteredBrands[index]),
+                  dense: true,
+                );
+              },
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -472,7 +650,7 @@ class CustomBottomNav extends StatelessWidget {
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: greenColor,
+      selectedItemColor: Colors.black,
       unselectedItemColor: Colors.black,
       currentIndex: currentIndex,
       iconSize: 22 * scale,
@@ -480,26 +658,15 @@ class CustomBottomNav extends StatelessWidget {
       unselectedFontSize: 13 * scale,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(
-            currentIndex == 0 ? Icons.home : Icons.home_outlined,
-            color: currentIndex == 0 ? greenColor : Colors.black,
-          ),
+          icon: Icon(Icons.home_outlined, color: Colors.black),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            currentIndex == 1
-                ? Icons.support_agent
-                : Icons.support_agent_outlined,
-            color: currentIndex == 1 ? greenColor : Colors.black,
-          ),
+          icon: Icon(Icons.support_agent_outlined, color: Colors.black),
           label: 'AI Support',
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            currentIndex == 2 ? Icons.person : Icons.person_outline,
-            color: currentIndex == 2 ? greenColor : Colors.black,
-          ),
+          icon: Icon(Icons.person_outline, color: Colors.black),
           label: 'Account',
         ),
       ],
@@ -520,6 +687,7 @@ class Import extends StatefulWidget {
 class _ImportState extends State<Import> {
   final Color greenColor = const Color(0xFF23B09B);
   final double scale = 0.9;
+  final ScrollController _scrollController = ScrollController();
 
   String? _selectedCategoryOfItem;
   String? _selectedBrand;
@@ -542,38 +710,6 @@ class _ImportState extends State<Import> {
     "Furniture",
     "Clothes",
   ];
-
-  final Map<String, List<String>> _brandsByCategory = {
-    "Mobile Phones": [
-      "Apple(iPhones)",
-      "Samsung",
-      "One plus",
-      "Google(pixel)",
-      "Vivo",
-      "Xiaomi",
-      "Motorola",
-      "Infinix",
-      "Tecno",
-      "Itel",
-      "Nokia",
-      "Oppo",
-    ],
-    "Laptops": [
-      "Apple(MacBook)",
-      "Dell",
-      "HP",
-      "Lenovo",
-      "Asus",
-      "Acer",
-      "Microsoft",
-      "MSI",
-    ],
-  };
-
-  final Map<String, Widget> _productBrandPopups = const {
-    "Apple(iPhones)": AppleIphoneProductPopup(),
-    // Add more brand popups as needed.
-  };
 
   void _incrementQuantity() {
     setState(() {
@@ -603,38 +739,17 @@ class _ImportState extends State<Import> {
     }
   }
 
-  void _showProductCategoryPopup() async {
-    if (_selectedCategoryOfItem == null) return;
-    List<String> brands = _brandsByCategory[_selectedCategoryOfItem] ?? [];
-    if (brands.isEmpty) return;
+  void _onBrandSelected(String? brand) {
+    setState(() {
+      _selectedBrand = brand;
+      _selectedProduct = null; // Reset product when brand changes
+    });
+  }
 
-    String? selectedBrand = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return BrandPopupDialog(brands: brands, greenColor: greenColor);
-      },
-    );
-
-    if (!mounted) return;
-    if (selectedBrand != null) {
-      setState(() {
-        _selectedBrand = selectedBrand;
-        _selectedProduct = null;
-      });
-
-      if (_productBrandPopups[selectedBrand] != null) {
-        String? selectedProduct = await showDialog<String>(
-          context: context,
-          builder: (context) => _productBrandPopups[selectedBrand]!,
-        );
-        if (!mounted) return;
-        if (selectedProduct != null) {
-          setState(() {
-            _selectedProduct = selectedProduct;
-          });
-        }
-      }
-    }
+  void _onProductSelected(String? product) {
+    setState(() {
+      _selectedProduct = product;
+    });
   }
 
   Future<void> _pickImage() async {
@@ -692,6 +807,7 @@ class _ImportState extends State<Import> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _addressController.dispose();
     _phoneController.dispose();
     _notesController.dispose();
@@ -751,138 +867,145 @@ class _ImportState extends State<Import> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(82),
-        child: Material(
-          color: Colors.white,
-          child: SafeArea(
-            bottom: false,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width + 100,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Text(
-                          '<',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        padding: const EdgeInsets.only(right: 8, left: 2),
-                        splashRadius: 24,
-                        alignment: Alignment.center,
-                      ),
-                      const SizedBox(width: 4),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Ojo Lagos Post...',
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: 72.0, // reduced from 82.0
+              floating: true,
+              pinned: false,
+              snap: true,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              flexibleSpace: FlexibleSpaceBar(
+                background: SafeArea(
+                  bottom: false,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ), // reduced vertical padding
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Text(
+                            '<',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Reddit Sans',
+                              fontSize: 32,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(0, 0),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              alignment: Alignment.centerLeft,
-                              textStyle: const TextStyle(
-                                decoration: TextDecoration.none,
+                          onPressed: () => Navigator.pop(context),
+                          padding: const EdgeInsets.only(right: 8, left: 2),
+                          splashRadius: 24,
+                          alignment: Alignment.center,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Ojo Lagos Post...',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Reddit Sans',
+                                ),
                               ),
+                              TextButton(
+                                onPressed: () {},
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: const Size(0, 0),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  alignment: Alignment.centerLeft,
+                                  textStyle: const TextStyle(
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Edit Location',
+                                  style: TextStyle(
+                                    color: Color(0xFF23B09B),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Reddit Sans',
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 4),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFE9F7F5),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.notifications_none,
+                              color: Colors.black,
+                              size: 22,
                             ),
-                            child: const Text(
-                              'Edit Location',
-                              style: TextStyle(
-                                color: Color(0xFF23B09B),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Reddit Sans',
-                                decoration: TextDecoration.none,
-                              ),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) =>
+                                          const account.NotificationsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFE9F7F5),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.settings,
+                              color: Colors.black,
+                              size: 22,
                             ),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => const account.MyProfileScreen(),
+                                ),
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                      const SizedBox(width: 16),
-                      // Notifications (light green circle with black icon)
-                      Container(
-                        margin: const EdgeInsets.only(top: 0, right: 8),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(
-                            0xFFE9F7F5,
-                          ), // light green from upload sample
                         ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.notifications_none,
-                            color: Colors.black,
-                            size: 22,
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => const account.NotificationsScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      // Settings (light green circle with black icon)
-                      Container(
-                        margin: const EdgeInsets.only(top: 0, right: 8),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(
-                            0xFFE9F7F5,
-                          ), // light green from upload sample
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.settings,
-                            color: Colors.black,
-                            size: 22,
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const account.MyProfileScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(30),
+          ];
+        },
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            30,
+            10,
+            30,
+            30,
+          ), // reduced top padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -905,8 +1028,7 @@ class _ImportState extends State<Import> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(height: 18 * scale),
-
+              SizedBox(height: 8 * scale), // reduced from 18 * scale
               // Category of Item
               Text('Category of Item', style: textStyleLabel),
               SizedBox(height: 6 * scale),
@@ -940,39 +1062,17 @@ class _ImportState extends State<Import> {
               ),
               SizedBox(height: 16 * scale),
 
-              // Product Name (multi-popup)
+              // Product Name with suggestions
               Text('Product Name', style: textStyleLabel),
               SizedBox(height: 6 * scale),
-              GestureDetector(
-                onTap: _showProductCategoryPopup,
-                child: Container(
-                  decoration: inputBoxDecoration(),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 16 * scale,
-                    horizontal: 15 * scale,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _selectedProduct ??
-                              _selectedBrand ??
-                              'select product item',
-                          style: TextStyle(
-                            fontFamily: 'Reddit Sans',
-                            fontSize: 15 * scale,
-                            color:
-                                (_selectedProduct == null &&
-                                        _selectedBrand == null)
-                                    ? Colors.grey
-                                    : Colors.black,
-                          ),
-                        ),
-                      ),
-                      Icon(Icons.expand_more, color: Colors.black54),
-                    ],
-                  ),
-                ),
+              ProductSuggestionsWidget(
+                selectedCategory: _selectedCategoryOfItem,
+                selectedBrand: _selectedBrand,
+                selectedProduct: _selectedProduct,
+                greenColor: greenColor,
+                scale: scale,
+                onBrandSelected: _onBrandSelected,
+                onProductSelected: _onProductSelected,
               ),
               SizedBox(height: 16 * scale),
 

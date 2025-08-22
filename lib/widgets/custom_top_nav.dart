@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../screens/account/edit_profile.dart';
+import '../screens/account/my_profile.dart';
+import '../screens/account/notifications.dart';
 
 class CustomTopNav extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -28,7 +31,12 @@ class CustomTopNav extends StatelessWidget implements PreferredSizeWidget {
           if (showEditLocation)
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, '/edit_location');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen(),
+                  ),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -112,11 +120,16 @@ class CustomTopNav extends StatelessWidget implements PreferredSizeWidget {
                         icon: const Icon(
                           Icons.notifications_none_outlined,
                           color: Colors.black87,
-                          size: 24,
+                          size: 20, // Reduced from 24 to 20
                         ),
                         tooltip: 'Notifications',
                         onPressed: () {
-                          Navigator.pushNamed(context, '/notifications');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationsScreen(),
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -140,11 +153,16 @@ class CustomTopNav extends StatelessWidget implements PreferredSizeWidget {
                         icon: const Icon(
                           Icons.settings_outlined,
                           color: Colors.black87,
-                          size: 24,
+                          size: 20, // Reduced from 24 to 20
                         ),
                         tooltip: 'Settings',
                         onPressed: () {
-                          Navigator.pushNamed(context, '/settings');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyProfileScreen(),
+                            ),
+                          );
                         },
                       ),
                     ],
