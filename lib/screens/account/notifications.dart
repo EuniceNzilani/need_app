@@ -18,47 +18,50 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     } else if (idx == 1) {
       Navigator.pushReplacementNamed(context, '/ai_help_centre');
     }
-    // idx==2 is Account/Profile (current)
+    // idx==2 is Notifications (current)
   }
+
+  // Use the correct path for the profile image everywhere
+  static const String _profileImagePath = 'Assets/friday chukwu image.jpg';
 
   final List<Map<String, String>> _notifications = [
     {
-      "avatar": "Assets/friday_chuckwu_image.jpg",
+      "avatar": _profileImagePath,
       "title": "Friday Chukwu accepted your request Service",
       "message":
           "You can now work with friday chukwu and share important information with him as your expert",
       "time": "Just now",
     },
     {
-      "avatar": "Assets/friday_chuckwu_image.jpg",
+      "avatar": _profileImagePath,
       "title": "Friday Chukwu accepted your request Service",
       "message":
           "You can now work with friday chukwu and share important information with him as your expert",
       "time": "2 hours ago",
     },
     {
-      "avatar": "Assets/friday_chuckwu_image.jpg",
+      "avatar": _profileImagePath,
       "title": "Friday Chukwu accepted your request Service",
       "message":
           "You can now work with friday chukwu and share important information with him as your expert",
       "time": "1 day ago",
     },
     {
-      "avatar": "Assets/friday_chuckwu_image.jpg",
+      "avatar": _profileImagePath,
       "title": "Friday Chukwu accepted your request Service",
       "message":
           "You can now work with friday chukwu and share important information with him as your expert",
       "time": "Just now",
     },
     {
-      "avatar": "Assets/friday_chuckwu_image.jpg",
+      "avatar": _profileImagePath,
       "title": "Friday Chukwu accepted your request Service",
       "message":
           "You can now work with friday chukwu and share important information with him as your expert",
       "time": "2 hours ago",
     },
     {
-      "avatar": "Assets/friday_chuckwu_image.jpg",
+      "avatar": _profileImagePath,
       "title": "Friday Chukwu accepted your request Service",
       "message":
           "You can now work with friday chukwu and share important information with him as your expert",
@@ -145,7 +148,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(

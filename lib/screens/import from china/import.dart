@@ -890,13 +890,10 @@ class _ImportState extends State<Import> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Text(
-                            '<',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 32,
-                              fontWeight: FontWeight.w400,
-                            ),
+                          icon: const Icon(
+                            Icons.chevron_left,
+                            color: Colors.black,
+                            size: 32,
                           ),
                           onPressed: () => Navigator.pop(context),
                           padding: const EdgeInsets.only(right: 8, left: 2),

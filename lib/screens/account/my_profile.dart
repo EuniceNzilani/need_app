@@ -13,39 +13,6 @@ import 'deactivate.dart';
 import 'about_app.dart';
 import 'edit_profile.dart';
 
-class _LogoutIconPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paintCircle =
-        Paint()
-          ..color = Colors.black
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2.2
-          ..strokeCap = StrokeCap.round;
-
-    final Paint paintDot =
-        Paint()
-          ..color = Colors.black
-          ..style = PaintingStyle.fill;
-
-    final Rect rect = Rect.fromLTWH(2, 2, size.width - 4, size.height - 4);
-    canvas.drawArc(rect, 0.7, 4.15, false, paintCircle);
-
-    final double dotRadius = 2.7;
-    final double angle = 0.7;
-    final double center = size.width / 2;
-    final double r = (size.width - 4) / 2;
-    final Offset dotCenter = Offset(
-      center + r * math.cos(angle),
-      center + r * math.sin(angle),
-    );
-    canvas.drawCircle(dotCenter, dotRadius, paintDot);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
@@ -325,7 +292,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               minLeadingWidth: 0,
               leading:
                   isLogout
-                      ? SizedBox(width: 24, height: 24, child: _logoutIcon())
+                      ? const Icon(
+                        Icons.power_settings_new,
+                        color: Colors.black,
+                        size: 24,
+                      )
                       : Icon(icon, color: Colors.black, size: 24),
               title: Text(
                 title,
@@ -356,10 +327,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget _logoutIcon() {
-    return CustomPaint(painter: _LogoutIconPainter(), size: const Size(24, 24));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -369,14 +336,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Text(
-            "<",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 24,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 24),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -499,7 +459,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 _buildSettingItem(
                   'Logout',
-                  icon: Icons.exit_to_app, // dummy, replaced with custom
+                  icon:
+                      Icons
+                          .exit_to_app, // dummy, replaced with power_settings_new
                   onTap: _showLogoutDialog,
                   isLogout: true,
                 ),

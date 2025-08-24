@@ -64,7 +64,12 @@ class _NegotiationChatScreenState extends State<NegotiationChatScreen> {
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const ExpertProfileAbout()),
+              );
+            },
           ),
           titleSpacing: 0,
           title: InkWell(

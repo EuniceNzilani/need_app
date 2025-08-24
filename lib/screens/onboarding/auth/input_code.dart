@@ -119,15 +119,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Text(
-            "<",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 28,
-              fontWeight: FontWeight.w400,
-              fontFamily: 'RedditSans',
-            ),
-          ),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () {
             Navigator.pushReplacement(
               context,

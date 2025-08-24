@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
 import '../../widgets/progress_dots.dart';
 
+/// Helper function for instant navigation with no animation
+void instantPush(BuildContext context, Widget page) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+    ),
+  );
+}
+
+void instantPushReplacement(BuildContext context, Widget page) {
+  Navigator.of(context).pushReplacement(
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+    ),
+  );
+}
+
 class SpecialFeatureScreen extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onSkip;

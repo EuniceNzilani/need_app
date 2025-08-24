@@ -8,7 +8,6 @@ class BookingConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const Color greenColor = Color(0xFF23B09B);
 
-    // Timeline steps data
     final steps = [
       {
         "dotColor": greenColor,
@@ -36,8 +35,8 @@ class BookingConfirmationScreen extends StatelessWidget {
       },
     ];
 
-    // This controls the vertical distance between dots/texts
-    const double dotSpacing = 52.0;
+    // Reduce the spacing between steps
+    const double dotSpacing = 16.0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -68,7 +67,6 @@ class BookingConfirmationScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 30),
-            // Profile avatar and info
             Center(
               child: Column(
                 children: [
@@ -104,52 +102,30 @@ class BookingConfirmationScreen extends StatelessWidget {
             // Timeline/Stepper
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 34.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Vertical timeline: long dashed line behind all dots
-                  SizedBox(
-                    width: 23,
-                    child: Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        // Dashed line spans all dots
-                        Positioned.fill(
-                          child: _FullHeightDashedLine(
-                            dotCount: steps.length,
-                            dotSpacing: dotSpacing,
-                          ),
-                        ),
-                        // Dots at their respective positions
-                        Column(
-                          children: List.generate(steps.length, (i) {
-                            return Padding(
-                              padding: EdgeInsets.only(top: i * dotSpacing),
-                              child: _StatusDot(
-                                color: steps[i]["dotColor"] as Color,
-                              ),
-                            );
-                          }),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  // Texts and ticks
-                  Expanded(
-                    child: Column(
-                      children: List.generate(steps.length, (i) {
-                        final step = steps[i];
-                        final isLast = i == steps.length - 1;
-                        return Padding(
-                          // The last entry doesn't need extra bottom padding
+              child: Column(
+                children: List.generate(steps.length, (i) {
+                  final step = steps[i];
+                  final isLast = i == steps.length - 1;
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Dot and line
+                      Column(
+                        children: [
+                          _StatusDot(color: step["dotColor"] as Color),
+                          if (!isLast)
+                            _VerticalDashedLine(
+                              height: dotSpacing + 25, // adjust for text height
+                              color: Colors.grey.shade300,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(width: 15),
+                      // Text and tick
+                      Expanded(
+                        child: Padding(
                           padding: EdgeInsets.only(
-                            top:
-                                i == 0
-                                    ? 0.0
-                                    : dotSpacing -
-                                        13.0, // 13.0 is dot height, aligns dot center to row center
-                            bottom: !isLast ? 0.0 : 0.0,
+                            bottom: isLast ? 0 : dotSpacing,
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +147,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    const SizedBox(height: 2),
+                                    const SizedBox(height: 1),
                                     Text(
                                       step["status"] as String,
                                       style: TextStyle(
@@ -199,11 +175,11 @@ class BookingConfirmationScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        );
-                      }),
-                    ),
-                  ),
-                ],
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           ],
@@ -230,34 +206,29 @@ class _StatusDot extends StatelessWidget {
   }
 }
 
-/// Draws a full vertical dashed line spanning all steps, regardless of dot spacing.
-class _FullHeightDashedLine extends StatelessWidget {
-  final int dotCount;
-  final double dotSpacing;
-  const _FullHeightDashedLine({
-    required this.dotCount,
-    required this.dotSpacing,
-  });
+class _VerticalDashedLine extends StatelessWidget {
+  final double height;
+  final Color color;
+  const _VerticalDashedLine({required this.height, required this.color});
+
   @override
   Widget build(BuildContext context) {
-    // The full dashed line height covers the distance from the center of the first dot to the center of the last dot
-    final double totalHeight =
-        dotCount > 1 ? dotSpacing * (dotCount - 1) + 13.0 : 13.0;
-    // 13 is the height of the dot itself
     return SizedBox(
       width: 13,
-      height: totalHeight,
-      child: CustomPaint(painter: _DashedLinePainter()),
+      height: height,
+      child: CustomPaint(painter: _DashedLinePainter(color: color)),
     );
   }
 }
 
 class _DashedLinePainter extends CustomPainter {
+  final Color color;
+  _DashedLinePainter({required this.color});
   @override
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.grey.shade300
+          ..color = color
           ..strokeWidth = 2;
     const double dashHeight = 3.0;
     const double dashSpace = 3.5;

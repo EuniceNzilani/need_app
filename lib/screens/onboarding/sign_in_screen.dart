@@ -21,14 +21,7 @@ class _SignInScreenState extends State<SignInScreen> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: const Text(
-            "<",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 28,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () {
             Navigator.push(
               context,

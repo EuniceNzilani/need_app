@@ -30,6 +30,7 @@ class _NeedScreenState extends State<NeedScreen> {
   final TextEditingController _budgetController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+  final FocusNode _needFocusNode = FocusNode(); // Add focus node
 
   final List<String> _allSuggestions = [
     "Generator Services",
@@ -114,24 +115,52 @@ class _NeedScreenState extends State<NeedScreen> {
   XFile? _imageFile;
   bool _showSuggestions = false;
   bool _serviceImmediately = false;
+  bool _isLocationEditable = false; // Add location edit state
   int _currentIndex = 0;
+  final TextEditingController _locationController =
+      TextEditingController(); // Add location controller
 
   @override
   void initState() {
     super.initState();
     _needController.addListener(_onNeedChanged);
+    _needFocusNode.addListener(_onFocusChanged); // Listen to focus changes
+    _locationController.text = "Ojo Lagos Post..."; // Initialize location text
+    // Initialize with default suggestions
+    _filteredSuggestions = [
+      "Generator Services",
+      "Gas Delivery",
+      "Plumbing",
+      "Electrical Repairs",
+      "Cleaning",
+      "Catering",
+      "Painting",
+      "Laundry Service",
+    ];
   }
 
   @override
   void dispose() {
     _needController.removeListener(_onNeedChanged);
+    _needFocusNode.removeListener(_onFocusChanged);
     _needController.dispose();
     _descriptionController.dispose();
     _budgetController.dispose();
     _dateController.dispose();
     _timeController.dispose();
+    _locationController.dispose(); // Dispose location controller
     _scrollController.dispose();
+    _needFocusNode.dispose(); // Dispose focus node
     super.dispose();
+  }
+
+  void _onFocusChanged() {
+    if (_needFocusNode.hasFocus) {
+      setState(() {
+        _showSuggestions = true;
+      });
+      _onNeedChanged(); // Update suggestions when focused
+    }
   }
 
   void _onNeedChanged() {
@@ -182,7 +211,9 @@ class _NeedScreenState extends State<NeedScreen> {
               ...containsSuggestions,
             ].take(10).toList();
       }
-      _showSuggestions = _filteredSuggestions.isNotEmpty;
+      // Always show suggestions when field has focus and there are suggestions
+      _showSuggestions =
+          _filteredSuggestions.isNotEmpty && _needFocusNode.hasFocus;
     });
   }
 
@@ -256,6 +287,7 @@ class _NeedScreenState extends State<NeedScreen> {
       _needController.text = suggestion;
       _showSuggestions = false;
     });
+    _needFocusNode.unfocus(); // Remove focus after selection
   }
 
   void _onSendRequest() {
@@ -284,6 +316,8 @@ class _NeedScreenState extends State<NeedScreen> {
                         fontSize: 16,
                         fontFamily: 'Reddit Sans',
                         fontWeight: FontWeight.w500,
+                        decoration:
+                            TextDecoration.none, // Remove yellow underline
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -391,10 +425,12 @@ class _NeedScreenState extends State<NeedScreen> {
         },
         body: GestureDetector(
           onTap: () {
+            // Only hide suggestions if they are showing
             if (_showSuggestions) {
               setState(() {
                 _showSuggestions = false;
               });
+              _needFocusNode.unfocus(); // Remove focus when tapping outside
             }
           },
           child: LayoutBuilder(
@@ -425,6 +461,7 @@ class _NeedScreenState extends State<NeedScreen> {
                                   decoration: shadowBoxDecoration(),
                                   child: TextFormField(
                                     controller: _needController,
+                                    focusNode: _needFocusNode, // Add focus node
                                     readOnly: false,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
@@ -438,6 +475,9 @@ class _NeedScreenState extends State<NeedScreen> {
                                       setState(() {
                                         _showSuggestions = true;
                                       });
+                                      if (!_needFocusNode.hasFocus) {
+                                        _needFocusNode.requestFocus();
+                                      }
                                       _onNeedChanged();
                                     },
                                     onChanged: (_) => _onNeedChanged(),
@@ -449,7 +489,8 @@ class _NeedScreenState extends State<NeedScreen> {
                                   ),
                                 ),
                                 if (_showSuggestions &&
-                                    _filteredSuggestions.isNotEmpty)
+                                    _filteredSuggestions.isNotEmpty &&
+                                    _needFocusNode.hasFocus)
                                   Positioned(
                                     left: 0,
                                     right: 0,
@@ -776,10 +817,10 @@ class _NeedScreenState extends State<NeedScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/edit_profile',
-                                    );
+                                    setState(() {
+                                      _isLocationEditable =
+                                          !_isLocationEditable;
+                                    });
                                   },
                                   child: const Text(
                                     "Edit Location",
@@ -796,26 +837,41 @@ class _NeedScreenState extends State<NeedScreen> {
                             ),
                             const SizedBox(height: 6),
                             Container(
-                              height: 48,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                color: kGrayBg,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Ojo Lagos Post...",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontFamily: 'Reddit Sans',
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
+                              decoration:
+                                  _isLocationEditable
+                                      ? shadowBoxDecoration()
+                                      : BoxDecoration(
+                                        color: kGrayBg,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                              child:
+                                  _isLocationEditable
+                                      ? TextFormField(
+                                        controller: _locationController,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: 15,
+                                            horizontal: 14,
+                                          ),
+                                        ),
+                                      )
+                                      : Container(
+                                        height: 48,
+                                        alignment: Alignment.centerLeft,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        child: Text(
+                                          _locationController.text,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontFamily: 'Reddit Sans',
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
                             ),
                             const SizedBox(height: 25),
                             SizedBox(

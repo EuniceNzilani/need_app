@@ -185,7 +185,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         style: TextStyle(
                           fontFamily: 'RedditSans',
                           fontSize: 14,
-                          color: Color(0xFF00659D),
+                          color: Color(0xFF00659D), // Figma blue 00659D
                           fontWeight: FontWeight.w500,
                         ),
                       ),

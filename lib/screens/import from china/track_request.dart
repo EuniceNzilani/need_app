@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import '../home.dart';
+import '../home.dart'; // This should point to your home screen
 import '../account/my_profile.dart';
 import '../account/notifications.dart';
-import 'import.dart';
+import 'import.dart'
+    hide CustomBottomNav; // Hide CustomBottomNav from import.dart
+import '/widgets/custom_bottom_nav.dart'
+    as widgets; // Use prefix to avoid conflicts
 
 class TrackRequest extends StatelessWidget {
   const TrackRequest({super.key});
@@ -55,7 +58,11 @@ class TrackRequest extends StatelessWidget {
     void pushReplacementNoAnimation(Widget page) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => page),
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => page,
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
       );
     }
 
@@ -76,7 +83,7 @@ class TrackRequest extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Back arrow (black less-than sign)
+                      // Back arrow (chevron_left)
                       GestureDetector(
                         onTap: () {
                           Navigator.pushReplacement(
@@ -89,13 +96,10 @@ class TrackRequest extends StatelessWidget {
                             right: 10 * scale,
                             top: 2 * scale,
                           ),
-                          child: const Text(
-                            '<',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 32,
-                              fontWeight: FontWeight.w400,
-                            ),
+                          child: const Icon(
+                            Icons.chevron_left,
+                            color: Colors.black,
+                            size: 32,
                           ),
                         ),
                       ),
@@ -183,8 +187,7 @@ class TrackRequest extends StatelessWidget {
                               ),
                               padding: EdgeInsets.all(8 * scale),
                               child: Icon(
-                                Icons
-                                    .settings, // changed from arrow to settings
+                                Icons.settings,
                                 color: Colors.black,
                                 size: 19 * scale,
                               ),
@@ -251,7 +254,13 @@ class TrackRequest extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNav(currentIndex: 0),
+      bottomNavigationBar: widgets.CustomBottomNav(
+        currentIndex:
+            -1, // No item selected since this is not a main nav screen
+        onTap: (index) {
+          // Handle any additional logic if needed
+        },
+      ),
     );
   }
 }
@@ -266,7 +275,6 @@ class _TimelineSteps extends StatelessWidget {
     required this.greenColor,
     required this.greyCircle,
     required this.scale,
-    super.key,
   });
 
   @override
@@ -313,10 +321,10 @@ class _TimelineSteps extends StatelessWidget {
               ),
             ),
             SizedBox(width: 17 * scale),
-            // Step icon and text (all icons green)
+            // Step icon and text (all icons black now)
             Padding(
               padding: EdgeInsets.only(top: 0),
-              child: Icon(step.icon, size: 17 * scale, color: greenColor),
+              child: Icon(step.icon, size: 17 * scale, color: Colors.black),
             ),
             SizedBox(width: 12 * scale),
             // Step texts
@@ -365,7 +373,6 @@ class _DashedLine extends StatelessWidget {
     required this.height,
     this.dashWidth = 2,
     this.dashHeight = 6,
-    super.key,
   });
 
   @override
@@ -406,82 +413,4 @@ class _StepData {
     required this.description,
     this.status = StepStatus.inactive,
   });
-}
-
-// --- Custom Bottom Navigation ---
-class CustomBottomNav extends StatelessWidget {
-  final int currentIndex;
-  final double scale;
-
-  const CustomBottomNav({
-    super.key,
-    required this.currentIndex,
-    this.scale = 0.9,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const greenColor = Color(0xFF23B09B);
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: greenColor,
-      unselectedItemColor: Colors.black,
-      currentIndex: currentIndex,
-      iconSize: 22 * scale,
-      selectedFontSize: 14 * scale,
-      unselectedFontSize: 13 * scale,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-            color: currentIndex == 0 ? greenColor : Colors.black,
-          ),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.support_agent,
-            color: currentIndex == 1 ? greenColor : Colors.black,
-          ),
-          label: 'AI Support',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.person,
-            color: currentIndex == 2 ? greenColor : Colors.black,
-          ),
-          label: 'Account',
-        ),
-      ],
-      onTap: (index) => _onItemTapped(context, index),
-    );
-  }
-
-  void _onItemTapped(BuildContext context, int index) {
-    if (index == currentIndex) return;
-    void pushReplacementNoAnimation(Widget page) {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => page,
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }
-
-    switch (index) {
-      case 0:
-        pushReplacementNoAnimation(const Home());
-        break;
-      case 1:
-        // You may navigate to your actual AI support page here
-        // For now, we'll use NotificationsScreen as placeholder
-        pushReplacementNoAnimation(const NotificationsScreen());
-        break;
-      case 2:
-        pushReplacementNoAnimation(const MyProfileScreen());
-        break;
-    }
-  }
 }

@@ -27,14 +27,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Text(
-            "<",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          icon: const Icon(Icons.chevron_left, color: Colors.black, size: 28),
           onPressed: () {
             Navigator.pushReplacement(
               context,

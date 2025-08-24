@@ -29,7 +29,7 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
   }
 
   Widget _helpButton({
-    required IconData icon,
+    required Widget icon,
     required String label,
     required VoidCallback onTap,
   }) {
@@ -48,7 +48,7 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
-        leading: Icon(icon, color: Colors.black, size: 26),
+        leading: icon,
         title: Text(
           label,
           style: const TextStyle(
@@ -100,7 +100,11 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
           child: Column(
             children: [
               _helpButton(
-                icon: Icons.help_outline,
+                icon: const Icon(
+                  Icons.help_outline,
+                  color: Colors.black,
+                  size: 26,
+                ),
                 label: "FAQs",
                 onTap: () {
                   Navigator.push(
@@ -110,7 +114,11 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
                 },
               ),
               _helpButton(
-                icon: Icons.headset_mic_outlined,
+                icon: const Icon(
+                  Icons.headset_mic_outlined,
+                  color: Colors.black,
+                  size: 26,
+                ),
                 label: "Talk to Agent",
                 onTap: () {
                   Navigator.push(
@@ -122,7 +130,11 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
                 },
               ),
               _helpButton(
-                icon: Icons.report_gmailerrorred_outlined,
+                icon: const Icon(
+                  Icons.report_gmailerrorred_outlined,
+                  color: Colors.black,
+                  size: 26,
+                ),
                 label: "Report an Issue",
                 onTap: () {
                   Navigator.push(
@@ -134,7 +146,12 @@ class _AiHelpCentreScreenState extends State<AiHelpCentreScreen> {
                 },
               ),
               _helpButton(
-                icon: Icons.smart_toy_outlined,
+                icon: Image.asset(
+                  'Assets/artificial-intelligence.png',
+                  width: 26,
+                  height: 26,
+                  fit: BoxFit.contain,
+                ),
                 label: "Chat with AI Assistant",
                 onTap: () {
                   Navigator.push(
